@@ -1,7 +1,7 @@
 #ifndef _INIT_H_
 #define _INIT_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 SDL_Window* init_sdl();
 
