@@ -1,6 +1,7 @@
 # http://www.gnu.org/software/automake
 
 Makefile.in
+Makefile
 /ar-lib
 /mdate-sh
 /py-compile
@@ -23,6 +24,8 @@ Makefile.in
 /install-sh
 /missing
 /stamp-h1
+/config.log
+/config.status
 
 # https://www.gnu.org/software/libtool/
 
@@ -43,3 +46,9 @@ autom4te.cache
 
 # vscode
 .vscode
+.dirstamp
+.deps
+
+*.o
+
+sadplay
