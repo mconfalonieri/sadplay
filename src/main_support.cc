@@ -23,6 +23,7 @@
 
 #include <fstream>
 #include <iostream>
+
 #include <unistd.h>
 
 using std::ifstream;
@@ -54,9 +55,9 @@ void read_file_list_from_file(sadplay_args* args, string file) {
 }
 
 // Reads the file list from the command line arguments.
-void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int index) {
-    for (int index = optind; index < argc; index++) {
-        args->file_list.push_back(string(argv[index]));
+void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int opt_index) {
+    for (int idx = opt_index; idx < argc; idx++) {
+        args->file_list.push_back(string(argv[idx]));
     }
 }
 

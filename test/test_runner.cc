@@ -29,15 +29,14 @@ using std::string;
 typedef map<string, bool(*)()> test_map;
 typedef test_map::const_iterator test_map_iterator;
 
+/**
+ * Loads the test map for the current suite.
+ * 
+ * @param   tests           the map with the loaded tests.
+ */
 extern void load_test_map(test_map &tests);
 
-/**
- * Test runner main function.
- */
-int main(int argc, char* argv[]) {
-    test_map tests;
-    load_test_map(tests);
-    std::cout << "Running tests:" << std::endl;
+bool run_tests(test_map& tests) {
     bool result = true;
     for (
                 test_map_iterator test_iterator = tests.cbegin();
@@ -52,10 +51,40 @@ int main(int argc, char* argv[]) {
         }
         std::cout << "OK." << std::endl;
     }
-    if (result) {
-        std::cout << "All tests ran smoothly." << std::endl;
-    } else {
-        std::cout << "Errors found." << std::endl;
+    return result;
+}
+
+bool run_tests(test_map& tests, int argc, char* argv[]) {
+    bool result = true;
+    for (int idx = 1; idx < argc; idx++) {
+        test_map_iterator test_iterator = tests.find(string(argv[idx]));
+        if (test_iterator == tests.cend()) {
+            result = false;
+            std::cout << " - test " + string(argv[idx]) + " not found." << std::endl;
+            break;
+        }
+        bool (*test_function)() = test_iterator->second;
+        std::cout << " - " << test_iterator->first << ": ";
+        if (!test_function()) {
+            result = false;
+            break;
+        }
+        std::cout << "OK." << std::endl;
     }
     return result;
+}
+
+/**
+ * Test runner main function.
+ */
+int main(int argc, char* argv[]) {
+    test_map tests;
+    load_test_map(tests);
+    std::cout << "Running tests:" << std::endl;
+    bool result = ((argc > 1)? run_tests(tests, argc, argv) : run_tests(tests));
+    if (result) {
+        std::cout << (result? "All tests ran smoothly." : "Errors found.")
+                << std::endl;
+    }
+    return result? 0 : 1;
 }

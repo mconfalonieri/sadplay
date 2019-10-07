@@ -50,5 +50,8 @@ autom4te.cache
 .deps
 
 *.o
+*.trs
+*.log
 
 sadplay
+test_main_support

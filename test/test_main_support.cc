@@ -21,46 +21,122 @@
 
 #include "main_support.h"
 
+#include <cstdio>
+#include <cstring>
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <string>
-#include <string.h>
+
+#include <unistd.h>
 
 using std::string;
 
+// Test command line arguments.
+const char* TEST_CMDLINE_ARGV[] = {"./sadplay", "-v", "pippo.hsc", "pluto.hsc", "paperino.hsc"};
+
+// Test command line arguments number.
+const int TEST_CMDLINE_ARGC = 5;
+
+// Index to the first file name
+const int TEST_CMDLINE_INDEX = 2;
+
 /**
- * Tests read_file_list_from_argv().
+ * Prepare an array with the test command line arguments.
  * 
- * @return              true if the test is successful
+ * @return              the command line arguments.
  */
-bool test_read_file_list_from_argv() {
-    sadplay_args args;
-    char* argv[5];
-    const char* cmdline[] = {"./sadplay", "-v", "pippo.hsc", "pluto.hsc", "paperino.hsc"};
-    for (int i = 0; i < 5; i++) {
-        argv[i] = (char *) malloc(strlen(cmdline[i]));
-        strcpy(argv[i], cmdline[i]);
+char** get_cmdline_argv() {
+    char** argv = new char*[TEST_CMDLINE_ARGC];
+    for (int i = 0; i < TEST_CMDLINE_ARGC; i++) {
+        argv[i] = new char[strlen(TEST_CMDLINE_ARGV[i])];
+        strcpy(argv[i], TEST_CMDLINE_ARGV[i]);
     }
-    int argc = 5;
-    int index = 2;
-    read_file_list_from_argv(&args, argc, argv, index);
+    return argv;
+}
+
+/**
+ * Releases the resources for the array with the command line arguments.
+ * 
+ * @param   argv        the array to be freed
+ */
+void free_cmdline_argv(char* argv[]) {
+    for (int i = 0; i < 5; i++) {
+        delete argv[i];
+    }
+    delete argv;
+}
+
+/**
+ * Prints the file list into a text file.
+ * 
+ * @param   out_file    the name of the output file
+ */
+void print_file_list(string out_file) {
+    std::ofstream out_stream(out_file);
+    for (int idx = TEST_CMDLINE_INDEX; idx < TEST_CMDLINE_ARGC; idx++) {
+        out_stream << string(TEST_CMDLINE_ARGV[idx]) << std::endl;
+    }
+}
+
+/**
+ * Compares the file list in the sadplay_args argument provided with the list
+ * available in the test data.
+ * 
+ * @param   args        the sadplay_args object to check
+ *
+ * @return  true if the comparison is successful
+ */
+bool check_file_list(sadplay_args& args) {
     bool test_ok = true;
     std::list<string>::const_iterator list_iterator = args.file_list.cbegin();
-    for (int idx = index; idx < argc; idx++) {
-        string exp_result((const char*) argv[idx]);
+    for (int idx = TEST_CMDLINE_INDEX; idx < TEST_CMDLINE_ARGC; idx++) {
+        string exp_result(TEST_CMDLINE_ARGV[idx]);
         string result = *list_iterator;
         if (exp_result != result) {
             std::cout << "expected \"" << exp_result << "\"; obtained \"" << result << "\"." << std::endl;
             test_ok = false;
             break;
         }
-    }
-    for (int i = 0; i < 5; i++) {
-        free(argv[i]);
+        list_iterator++;
     }
     return test_ok;
 }
+
+/**
+ * Tests read_file_list_from_argv().
+ * 
+ * @return  true if the test is successful
+ */
+bool test_read_file_list_from_argv() {
+    sadplay_args args;
+    char** argv = get_cmdline_argv();
+    int argc = TEST_CMDLINE_ARGC;
+    int index = TEST_CMDLINE_INDEX;
+     read_file_list_from_argv(&args, argc, argv, index);
+    bool test_ok = check_file_list(args);
+    free_cmdline_argv(argv);
+    return test_ok;
+}
+
+/**
+ * Tests read_file_list_from_file().
+ *
+ * @return  true if the test is successful
+ */
+bool test_read_file_list_from_file() {
+    sadplay_args args;
+    const char* out_file_name = "test.lst";
+    string out_file(out_file_name);
+    print_file_list(out_file);
+    read_file_list_from_file(&args, out_file);
+    bool test_ok = check_file_list(args, 2);
+    remove(out_file_name);
+    return test_ok;
+}
+
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {
     tests["test_read_file_list_from_argv"] = test_read_file_list_from_argv;
+    tests["test_read_file_list_from_file"] = test_read_file_list_from_file;
 }
