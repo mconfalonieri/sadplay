@@ -8,32 +8,44 @@
 
 int main(int argc, char *args[])
 {
-    channel_bar* cbar = create_channel_bar(8);
+    channel_bar *cbar = create_channel_bar(8);
     int c;
     srand(time(NULL));
-    for (c = 0; c < cbar->num; c++) {
+    for (c = 0; c < cbar->num; c++)
+    {
         cbar->channels[c] = rand() % 101;
     }
     //The window we'll be rendering to
-    SDL_Window *window = init_sdl();
+    SDL_Window* window = init_sdl();
 
-    int counter;
-    for (counter = 0; counter < 100; counter++)
+    SDL_Renderer* renderer = SDL_GetRenderer(window);
+    timed_args* timed_args = malloc(sizeof(timed_args));
+    timed_args->channel_bar = cbar;
+    timed_args->renderer = renderer;
+
+    draw_bars_callback(0, timed_args);
+
+    SDL_TimerID timerID = SDL_AddTimer(3000, draw_bars_callback, "100 milliseconds waited!");
+    int quit = 0;
+    SDL_Event e;
+    while (!quit)
     {
-        draw_bars(window, cbar);
-        SDL_Renderer* renderer = SDL_GetRenderer(window);
-        SDL_RenderPresent(renderer);
-        
-        reduce_bars(cbar);
-        SDL_Delay(10);
+        while (SDL_PollEvent(&e))
+        {
+            if (e.type == SDL_QUIT)
+            {
+                quit = -1;
+            }
+        }
     }
 
+    //Remove timer in case the call back was not called
+    SDL_RemoveTimer(timerID);
 
-    //Wait ten seconds
-    SDL_Delay(10000);
+    free(timed_args);
 
     //Destroy window
-    SDL_DestroyWindow( window );
+    SDL_DestroyWindow(window);
 
     //Quit SDL subsystems
     SDL_Quit();

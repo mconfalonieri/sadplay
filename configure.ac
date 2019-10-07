@@ -1,7 +1,6 @@
 AC_INIT([sadplay], [1.0])
 AM_INIT_AUTOMAKE
-
-AC_PROG_CC([gcc])
+AC_PROG_CXX
 
 dnl Check for SDL
 SDL_VERSION=2.0
@@ -14,3 +13,4 @@ LIBS="$LIBS $SDL_LIBS"
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
+

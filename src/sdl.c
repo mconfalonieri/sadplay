@@ -2,7 +2,7 @@
 
 SDL_Window* init_sdl() {
     //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
     {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(255);
@@ -19,7 +19,7 @@ SDL_Window* init_sdl() {
         exit(255);
     }
 
-    SDL_Renderer* renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
@@ -32,13 +32,10 @@ SDL_Window* init_sdl() {
     return window;
 }
 
-void draw_bar(SDL_Window* window, int x, int w, int bar_perc)
+void draw_bar(SDL_Renderer* renderer, int x, int w, int bar_perc)
 {
     // Color variables
     Uint8 r, g, b;
-
-    // Gets the renderer from the window
-    SDL_Renderer* renderer = SDL_GetRenderer(window);
 
     int y_min = BORDER;
     int y_max = SCREEN_HEIGHT - BORDER;
@@ -74,9 +71,8 @@ void calculate_color(int perc, Uint8* r, Uint8* g, Uint8* b) {
     *b = (Uint8) calc_b;
 }
 
-void draw_bars(SDL_Window* window, channel_bar* cbar)
+void draw_bars(SDL_Renderer* renderer, channel_bar* cbar)
 {
-    SDL_Renderer* renderer = SDL_GetRenderer(window);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
     // Clear winow
@@ -88,15 +84,15 @@ void draw_bars(SDL_Window* window, channel_bar* cbar)
 
     int c;
     for (c = 0; c <= cbar->num; c++) {
-        draw_bar(window, BORDER + (c * step) + step / 5, step * 3 / 5, cbar->channels[c]);
+        draw_bar(renderer, BORDER + (c * step) + step / 5, step * 3 / 5, cbar->channels[c]);
     }
 }
 
-void reduce_bars(channel_bar* cbar) {
+void reduce_bars(channel_bar* cbar, int diff) {
     int c;
     for (c = 0; c < cbar->num; c++) {
         if (cbar->channels[c] > 0) {
-            cbar->channels[c] -= 1;
+            cbar->channels[c] -= diff;
         }
     }
 }
@@ -113,4 +109,14 @@ void destroy_channel_bar(channel_bar* cbar)
 {
     free(cbar->channels);
     free(cbar);
+}
+
+Uint32 draw_bars_callback( Uint32 interval, void* param ) {
+    int counter;
+    timed_args* args = (timed_args*) param;
+    int diff = (interval + 50) / 100;
+    reduce_bars(args->channel_bar, diff);
+    draw_bars(args->renderer, args->channel_bar);
+    SDL_RenderPresent(args->renderer);
+    return 1;
 }
