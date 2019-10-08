@@ -21,16 +21,43 @@
 
 # Automake options
 AUTOMAKE_OPTIONS = subdir-objects
-AM_CXXFLAGS = -Isrc
 
 # Main sources
 bin_PROGRAMS = sadplay
 sadplay_SOURCES = src/main.cc src/main_support.cc src/sadplay.cc 
 
-# Test sources
+# Test cases
 TESTS = test_main_support
+
+# Test programs
 check_PROGRAMS = test_main_support
+
+test_main_support_LIBS = $(CODE_COVERAGE_LIBS)
+test_main_support_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS)
 test_main_support_SOURCES = test/test_runner.cc test/test_main_support.cc src/main_support.cc
 
 # Other resources
 README: README.md
+
+# lcov report
+if CODE_COVERAGE_ENABLED
+cov-reset:
+	@rm -fr coverage
+	@find . -name "*.gcda" -exec rm {} \;
+	@lcov --directory . --zerocounters
+
+cov-report:
+	@mkdir -p coverage
+	@lcov --compat-libtool --no-external --directory src --capture --output-file coverage/app.info  
+	@genhtml -o docs/coverage/ coverage/app.info 
+
+cov:
+	@make cov-report
+
+clean-local:
+	@make cov-reset 
+
+check:
+	@make cov
+
+endif 

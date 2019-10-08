@@ -19,7 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <vector>
+#ifndef _SADPLAY_DISPLAY_H_
+#define _SADPLAY_DISPLAY_H_
+
+#include <string>
 
 /**
  * The channel_bar class represents the channel bar that should hold the
@@ -28,13 +31,19 @@
 class channel_bar {
     public:
         /**
-         * Gives access to a channel for reading or writing.
+         * Updates a channel.
          * 
-         * @param   channel     the channel that needs to be accessed
-         * 
-         * @return  the reference to the channel
+         * @param   channel     the channel that needs to be updated
+         * @param   value       the new value for the channel
          */
-        virtual int& operator[](int channel) = 0;
+        virtual void update(int channel, int value) = 0;
+
+        /**
+         * Updates all channels.
+         * 
+         * @param   values    the values for the channels
+         */
+        virtual void update_all(int values[]) = 0;
 };
 
 /**
@@ -50,21 +59,20 @@ class display {
         /**
          * Updates the channel bar.
          */
-        virtual void update_channel_bar(channel_bar* channel_bar) = 0;
-};
-
-/**
- * The display_factory is used to create instances of display adapters.
- */
-class display_factory {
-    public:
-        /**
-         * Creates a new display instance.
-         */ 
-        virtual display* new_instance() = 0;
+        virtual void update_channel_bar() = 0;
 
         /**
-         * Returns the name of the driver.
+         * Returns the channel bar instance.
          */
-        virtual std::string name() = 0; 
+        virtual channel_bar* get_channel_bar() = 0;
+
+    protected:
+        /**
+         * Protected constructor.
+         */
+        display() {
+
+        }
 };
+
+#endif // _SADPLAY_DISPLAY_H_

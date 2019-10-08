@@ -20,8 +20,11 @@ dnl along with this program.  If not, see <https://www.gnu.org/licenses/>.
 dnl
 
 AC_INIT([sadplay], [1.0])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign parallel-tests color-tests])
+
 AC_PROG_CXX
+
+AX_CODE_COVERAGE
 
 dnl Check for SDL
 SDL_VERSION=2.0
@@ -29,9 +32,9 @@ AM_PATH_SDL2($SDL_VERSION,
         :,
         AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
 
+AC_SUBST(CXXFLAGS, "$CXXFLAGS $SDL_CFLAGS -I./include")
+AC_SUBST(LIBS, "$LIBS $SDL_LIBS")
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

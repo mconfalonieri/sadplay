@@ -32,7 +32,9 @@
 #define VERSION "<unspecified>"
 #endif
 
-/** GPLv3 license text that is displayed at start. **/
+/**
+ * GPLv3 license text that is displayed at start.
+ */
 const std::string SADPLAY_LICENSE =
     "sadplay version " VERSION " - Copyright (C) 2019 Marco Confalonieri\n\n"
     "This program comes with ABSOLUTELY NO WARRANTY; for details type `W'.\n"

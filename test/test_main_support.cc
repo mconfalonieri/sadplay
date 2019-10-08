@@ -113,7 +113,7 @@ bool test_read_file_list_from_argv() {
     char** argv = get_cmdline_argv();
     int argc = TEST_CMDLINE_ARGC;
     int index = TEST_CMDLINE_INDEX;
-     read_file_list_from_argv(&args, argc, argv, index);
+    read_file_list_from_argv(&args, argc, argv, index);
     bool test_ok = check_file_list(args);
     free_cmdline_argv(argv);
     return test_ok;
@@ -130,13 +130,25 @@ bool test_read_file_list_from_file() {
     string out_file(out_file_name);
     print_file_list(out_file);
     read_file_list_from_file(&args, out_file);
-    bool test_ok = check_file_list(args, 2);
+    bool test_ok = check_file_list(args);
     remove(out_file_name);
     return test_ok;
 }
 
+bool test_read_command_line() {
+    sadplay_args args;
+    char** argv = get_cmdline_argv();
+    int argc = TEST_CMDLINE_ARGC;
+    read_command_line(&args, argc, argv);
+    bool test_ok = args.verbose;
+    if (test_ok) {
+        test_ok = check_file_list(args);
+    }
+    return test_ok;
+}
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {
-    tests["test_read_file_list_from_argv"] = test_read_file_list_from_argv;
-    tests["test_read_file_list_from_file"] = test_read_file_list_from_file;
+    tests["main_support|read_file_list_from_argv"] = test_read_file_list_from_argv;
+    tests["main_support|read_file_list_from_file"] = test_read_file_list_from_file;
+    tests["main_support|read_command_line"] = test_read_command_line;
 }

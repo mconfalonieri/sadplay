@@ -22,18 +22,22 @@
 
 #include <iostream>
 
-using std::vector;
+//#include "sdl_driver.h"
+
 using std::string;
 using std::map;
 
 // Constructor.
 sadplay::sadplay(): verbose(false), log_stream() {
-
+    //this->driver = new sdl_display_driver();
 }
 
 // Destructor.
 sadplay::~sadplay() {
-
+    if (this->log_stream.is_open()) {
+        this->log_stream.close();
+    }
+    delete this->driver;
 }
 
 // Application runner.
@@ -47,11 +51,11 @@ int sadplay::run(sadplay_args* args) {
 // Logger.
 void sadplay::log(string line) {
     // Log to stdout if verbose (-v) flag present.
-    if (verbose) {
+    if (this->verbose) {
         std::cout << line << std::endl;
     }
     // Log to file if logfile (-l <logfile>) option is present.
-    if (log_stream.is_open()) {
-        log_stream << line << std::endl;
+    if (this->log_stream.is_open()) {
+        this->log_stream << line << std::endl;
     }
 }

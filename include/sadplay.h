@@ -55,6 +55,11 @@ struct sadplay_args {
 class sadplay {
     public:
         /**
+         * Default display driver name.
+         */
+        const std::string DEFAULT_DRIVER_NAME = "sdl";
+
+        /**
          * Constructor. It initializes the display drivers map with all the
          * known display drivers.
          */
@@ -85,11 +90,6 @@ class sadplay {
 
     private:
         /**
-         * Display drivers.
-         */
-        std::map<std::string, display_factory*> drivers;
-
-        /**
          * Verbose flag.
          */
         bool verbose;
@@ -98,6 +98,11 @@ class sadplay {
          * Log file.
          */
         std::ofstream log_stream;
+
+        /**
+         * Display driver.
+         */
+        display* driver;
 };
 
 #endif // _SADPLAY_SADPLAY_H_
