@@ -60,3 +60,4 @@ coverage/app.info
 
 sadplay
 test_main_support
+test_sdl_channel_bar

@@ -120,16 +120,34 @@ bool test_read_file_list_from_argv() {
 }
 
 /**
- * Tests read_file_list_from_file().
+ * Tests read_file_list_from_file() with a file argument.
  *
  * @return  true if the test is successful
  */
-bool test_read_file_list_from_file() {
+bool test_read_file_list_from_file_1() {
     sadplay_args args;
     const char* out_file_name = "test.lst";
     string out_file(out_file_name);
     print_file_list(out_file);
     read_file_list_from_file(&args, out_file);
+    bool test_ok = check_file_list(args);
+    remove(out_file_name);
+    return test_ok;
+}
+
+/**
+ * Tests read_file_list_from_file() with standard input.
+ *
+ * @return  true if the test is successful
+ */
+bool test_read_file_list_from_file_2() {
+    sadplay_args args;
+    const char* out_file_name = "test.lst";
+    string out_file(out_file_name);
+    print_file_list(out_file);
+    std::ifstream input(out_file_name);
+    read_file_list_from_file(&args, string("-"), input);
+    input.close();
     bool test_ok = check_file_list(args);
     remove(out_file_name);
     return test_ok;
@@ -149,6 +167,7 @@ bool test_read_command_line() {
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {
     tests["main_support|read_file_list_from_argv"] = test_read_file_list_from_argv;
-    tests["main_support|read_file_list_from_file"] = test_read_file_list_from_file;
+    tests["main_support|read_file_list_from_file_1"] = test_read_file_list_from_file_1;
+    tests["main_support|read_file_list_from_file_2"] = test_read_file_list_from_file_2;
     tests["main_support|read_command_line"] = test_read_command_line;
 }

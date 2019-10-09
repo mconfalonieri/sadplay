@@ -66,13 +66,16 @@ class display {
          */
         virtual channel_bar* get_channel_bar() = 0;
 
+        /**
+         * Virtual destructor.
+         */
+        virtual ~display() {}
+
     protected:
         /**
          * Protected constructor.
          */
-        display() {
-
-        }
+        display() {}
 };
 
 #endif // _SADPLAY_DISPLAY_H_

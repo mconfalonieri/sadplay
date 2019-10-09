@@ -30,12 +30,12 @@ using std::ifstream;
 using std::string;
 
 // Reads the file list from a text file or the standard input.
-void read_file_list_from_file(sadplay_args* args, string file) {
+void read_file_list_from_file(sadplay_args* args, string file, std::istream &input) {
     std::istream* file_list;
 
     // Open a file or assign our stream to standard input.
     if (file == "-") {
-        file_list = &std::cin;
+        file_list = &input;
     } else {
         file_list = new ifstream(file);
     }
@@ -48,7 +48,7 @@ void read_file_list_from_file(sadplay_args* args, string file) {
 
     // if the file list is not in the standard input, closes the stream and
     // delete it. 
-    if (file_list != &std::cin) {
+    if (file_list != &input) {
         ((ifstream*) file_list)->close();
         delete file_list;
     }

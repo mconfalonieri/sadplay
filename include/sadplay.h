@@ -57,7 +57,7 @@ class sadplay {
         /**
          * Default display driver name.
          */
-        const std::string DEFAULT_DRIVER_NAME = "sdl";
+        static const std::string DEFAULT_DRIVER_NAME;
 
         /**
          * Constructor. It initializes the display drivers map with all the

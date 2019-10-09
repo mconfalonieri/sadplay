@@ -21,6 +21,7 @@
 #ifndef _SADPLAY_MAIN_SUPPORT_H_
 #define _SADPLAY_MAIN_SUPPORT_H_
 
+#include <iostream>
 #include <string>
 
 #include "sadplay.h"
@@ -32,8 +33,9 @@
  * 
  * @param   args        the sadplay_args variable to fill.
  * @param   file        the file list file
+ * @param   input       the input stream to use as stdin
  */
-void read_file_list_from_file(sadplay_args* args, std::string file);
+void read_file_list_from_file(sadplay_args* args, std::string file, std::istream &input = std::cin);
 
 /**
  * Reads the audio file list from the command line vector.

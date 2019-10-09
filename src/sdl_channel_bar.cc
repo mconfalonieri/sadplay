@@ -25,7 +25,9 @@
 extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
     sdl_channel_bar* channel_bar = (sdl_channel_bar*) param;
     channel_bar->time_elapsed(time_elapsed);
+    return 1;
 }
+
 // Constructor: it creates the channel vector and initializes the mutex.
 sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(8) {
     this->mutex = SDL_CreateMutex();

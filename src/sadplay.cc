@@ -27,6 +27,9 @@
 using std::string;
 using std::map;
 
+// Assigning the constant value
+const string sadplay::DEFAULT_DRIVER_NAME = "sdl";
+
 // Constructor.
 sadplay::sadplay(): verbose(false), log_stream() {
     //this->driver = new sdl_display_driver();
@@ -37,7 +40,7 @@ sadplay::~sadplay() {
     if (this->log_stream.is_open()) {
         this->log_stream.close();
     }
-    delete this->driver;
+    // delete this->driver;
 }
 
 // Application runner.

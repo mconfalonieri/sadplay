@@ -26,6 +26,9 @@
 
 const int TEST_CHANNELS_NUM = 8;
 
+/**
+ * Class used for accessing the channel bar fields.
+ */
 class sdl_channel_bar_test_access {
     public:
         sdl_channel_bar_test_access(sdl_channel_bar* channel_bar) :
@@ -36,14 +39,24 @@ class sdl_channel_bar_test_access {
         std::vector<int>& access_vector() {
             return channel_bar->channels;
         }
+
+        SDL_mutex* access_mutex() {
+            return channel_bar->mutex;
+        }
     private:
         sdl_channel_bar* channel_bar;
 };
 
+/**
+ * Tests the channel bar constructor.
+ */
 bool test_sdl_channel_bar_constructor() {
     sdl_channel_bar* channel_bar = new sdl_channel_bar(TEST_CHANNELS_NUM);
     sdl_channel_bar_test_access* accessor = new sdl_channel_bar_test_access(channel_bar);
-    bool test_ok = (accessor->access_vector().size() == TEST_CHANNELS_NUM);
+    bool test_ok = (accessor->access_vector().size() == TEST_CHANNELS_NUM)
+        && (accessor->access_mutex() != NULL);
+    delete accessor;
+    delete channel_bar;
     return test_ok;
 }
 
