@@ -27,14 +27,18 @@ bin_PROGRAMS = sadplay
 sadplay_SOURCES = src/main.cc src/main_support.cc src/sadplay.cc 
 
 # Test cases
-TESTS = test_main_support
+TESTS = $(check_PROGRAMS)
 
 # Test programs
-check_PROGRAMS = test_main_support
+check_PROGRAMS = test_main_support test_sdl_channel_bar
 
 test_main_support_LIBS = $(CODE_COVERAGE_LIBS)
-test_main_support_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS)
+test_main_support_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
 test_main_support_SOURCES = test/test_runner.cc test/test_main_support.cc src/main_support.cc
+
+test_sdl_channel_bar_LIBS = $(CODE_COVERAGE_LIBS)
+test_sdl_channel_bar_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
+test_sdl_channel_bar_SOURCES = test/test_runner.cc test/test_sdl_channel_bar.cc src/sdl_channel_bar.cc
 
 # Other resources
 README: README.md

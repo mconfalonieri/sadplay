@@ -28,6 +28,13 @@
 
 #include "display.h"
 
+#ifdef SADPLAY_TEST
+
+// Forward declaration of the accessor class used for tests.
+class sdl_channel_bar_test_access;
+
+#endif // SADPLAY_TEST
+
 /**
  * Function that must be called by the SDL timer to update the channel bar.
  * 
@@ -79,6 +86,11 @@ class sdl_channel_bar {
     private:
         /// the callback can access private members.
         friend int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+
+#ifdef SADPLAY_TEST
+        /// Provide access to test class
+        friend class sdl_channel_bar_test_access;
+#endif // SADPLAY_TEST
 
         /**
          * Lowers the channel bar according to the time elapsed.

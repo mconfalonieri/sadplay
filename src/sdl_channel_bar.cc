@@ -57,6 +57,18 @@ void sdl_channel_bar::update_all(int values[]) {
     SDL_UnlockMutex(this->mutex);
 }
 
+// Reset all channels
+void sdl_channel_bar::reset_channels() {
+    int status = SDL_LockMutex(this->mutex);
+    if (status != 0) {
+        return;
+    }
+    for (int c = 0; c < this->channels.size(); c++) {
+        this->channels[c] = 0;
+    }
+    SDL_UnlockMutex(this->mutex);
+}
+
 // Executes the operations associated with the timer.
 void sdl_channel_bar::time_elapsed(Uint32 time_elapsed) {
     int status = SDL_LockMutex(this->mutex);
