@@ -45,11 +45,13 @@ bool run_tests(test_map& tests) {
     ) {
         bool (*test_function)() = test_iterator->second;
         std::cout << " - " << test_iterator->first << ": ";
-        if (!test_function()) {
+        bool test_result = test_function();
+        if (!test_result) {
             result = false;
-            break;
+            std::cout << "FAILED." << std::endl;
+        } else {
+            std::cout << "OK." << std::endl;
         }
-        std::cout << "OK." << std::endl;
     }
     return result;
 }
@@ -65,11 +67,13 @@ bool run_tests(test_map& tests, int argc, char* argv[]) {
         }
         bool (*test_function)() = test_iterator->second;
         std::cout << " - " << test_iterator->first << ": ";
-        if (!test_function()) {
+        bool test_result = test_function();
+        if (!test_result) {
             result = false;
-            break;
+            std::cout << "FAILED." << std::endl;
+        } else {
+            std::cout << "OK." << std::endl;
         }
-        std::cout << "OK." << std::endl;
     }
     return result;
 }

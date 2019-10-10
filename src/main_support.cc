@@ -79,6 +79,7 @@ void read_command_line(sadplay_args* args, int argc, char* argv[]) {
                 file_list_used = true;
                 break;
             case '?':
+                args->error = true;
                 return;
         }
     }

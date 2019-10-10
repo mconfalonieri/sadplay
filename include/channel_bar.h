@@ -1,7 +1,7 @@
 /*
  * sadplay - AdLib music player with graphics.
  * 
- * display.h - abstract display interface.
+ * channel_bar.h - abstract channel bar interface.
  * 
  * Copyright (C) 2019 Marco Confalonieri <marco at marcoconfalonieri.it>
  *
@@ -19,30 +19,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef _SADPLAY_DISPLAY_H_
-#define _SADPLAY_DISPLAY_H_
-
-#include "channel_bar.h"
+#ifndef _SADPLAY_CHANNEL_BAR_H_
+#define _SADPLAY_CHANNEL_BAR_H_
 
 /**
- * The display class represents an abstract view for the application.
+ * The channel_bar class represents the channel bar that should hold the
+ * channel activity values.
  */
-class display {
+class channel_bar {
     public:
         /**
-         * Initializes the view.
+         * Updates a channel.
+         * 
+         * @param   channel     the channel that needs to be updated
+         * @param   value       the new value for the channel
          */
-        virtual void initialize() = 0;
+        virtual void update(int channel, int value) = 0;
 
         /**
-         * Updates the channel bar.
+         * Updates all channels.
+         * 
+         * @param   values    the values for the channels
          */
-        virtual void update_channel_bar() = 0;
+        virtual void update_all(const int values[]) = 0;
 
         /**
-         * Returns the channel bar instance.
+         * Sets all the channel values to zero.
          */
-        virtual channel_bar* get_channel_bar() = 0;
+        virtual void reset_channels() = 0;
 };
 
-#endif // _SADPLAY_DISPLAY_H_
+#endif // _SADPLAY_CHANNEL_BAR_H_

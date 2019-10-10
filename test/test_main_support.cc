@@ -32,11 +32,22 @@
 
 using std::string;
 
+// Test list name
+const char* TEST_LST = "test.lst";
+// Test log name
+const char* TEST_LOG = "test.log";
 // Test command line arguments.
 const char* TEST_CMDLINE_ARGV[] = {"./sadplay", "-v", "pippo.hsc", "pluto.hsc", "paperino.hsc"};
-
 // Test command line arguments number.
 const int TEST_CMDLINE_ARGC = 5;
+// Test command line 2 arguments.
+const char* TEST_CMDLINE2_ARGV[] = {"./sadplay", "-v", "-l", TEST_LOG, "-f", TEST_LST};
+// Test command line 2 arguments number.
+const int TEST_CMDLINE2_ARGC = 6;
+// Test command line arguments.
+const char* TEST_CMDLINE3_ARGV[] = {"./sadplay", "-v", "-f"};
+// Test command line arguments number.
+const int TEST_CMDLINE3_ARGC = 3;
 
 // Index to the first file name
 const int TEST_CMDLINE_INDEX = 2;
@@ -44,13 +55,16 @@ const int TEST_CMDLINE_INDEX = 2;
 /**
  * Prepare an array with the test command line arguments.
  * 
- * @return              the command line arguments.
+ * @param   argc        argument number
+ * @param   cargv       arguments
+ * 
+ * @return  the command line arguments.
  */
-char** get_cmdline_argv() {
-    char** argv = new char*[TEST_CMDLINE_ARGC];
-    for (int i = 0; i < TEST_CMDLINE_ARGC; i++) {
-        argv[i] = new char[strlen(TEST_CMDLINE_ARGV[i])];
-        strcpy(argv[i], TEST_CMDLINE_ARGV[i]);
+char** get_cmdline_argv(int argc, const char* cargv[]) {
+    char** argv = new char*[argc];
+    for (int i = 0; i < argc; i++) {
+        argv[i] = new char[strlen(cargv[i])];
+        strcpy(argv[i], cargv[i]);
     }
     return argv;
 }
@@ -94,7 +108,6 @@ bool check_file_list(sadplay_args& args) {
         string exp_result(TEST_CMDLINE_ARGV[idx]);
         string result = *list_iterator;
         if (exp_result != result) {
-            std::cout << "expected \"" << exp_result << "\"; obtained \"" << result << "\"." << std::endl;
             test_ok = false;
             break;
         }
@@ -110,7 +123,7 @@ bool check_file_list(sadplay_args& args) {
  */
 bool test_read_file_list_from_argv() {
     sadplay_args args;
-    char** argv = get_cmdline_argv();
+    char** argv = get_cmdline_argv(TEST_CMDLINE_ARGC, TEST_CMDLINE_ARGV);
     int argc = TEST_CMDLINE_ARGC;
     int index = TEST_CMDLINE_INDEX;
     read_file_list_from_argv(&args, argc, argv, index);
@@ -126,7 +139,7 @@ bool test_read_file_list_from_argv() {
  */
 bool test_read_file_list_from_file_1() {
     sadplay_args args;
-    const char* out_file_name = "test.lst";
+    const char* out_file_name = TEST_LST;
     string out_file(out_file_name);
     print_file_list(out_file);
     read_file_list_from_file(&args, out_file);
@@ -142,7 +155,7 @@ bool test_read_file_list_from_file_1() {
  */
 bool test_read_file_list_from_file_2() {
     sadplay_args args;
-    const char* out_file_name = "test.lst";
+    const char* out_file_name = TEST_LST;
     string out_file(out_file_name);
     print_file_list(out_file);
     std::ifstream input(out_file_name);
@@ -153,9 +166,10 @@ bool test_read_file_list_from_file_2() {
     return test_ok;
 }
 
-bool test_read_command_line() {
+bool test_read_command_line_1() {
     sadplay_args args;
-    char** argv = get_cmdline_argv();
+    optind = 1;
+    char** argv = get_cmdline_argv(TEST_CMDLINE_ARGC, TEST_CMDLINE_ARGV);
     int argc = TEST_CMDLINE_ARGC;
     read_command_line(&args, argc, argv);
     bool test_ok = args.verbose;
@@ -164,10 +178,40 @@ bool test_read_command_line() {
     }
     return test_ok;
 }
+
+bool test_read_command_line_2() {
+    sadplay_args args;
+    optind = 1;
+    const char* out_file_name = TEST_LST;
+    string out_file(out_file_name);
+    print_file_list(out_file);
+    char** argv = get_cmdline_argv(TEST_CMDLINE2_ARGC, TEST_CMDLINE2_ARGV);
+    int argc = TEST_CMDLINE2_ARGC;
+    read_command_line(&args, argc, argv);
+    bool test_ok = args.verbose && !args.log_file.empty();
+    if (test_ok) {
+        test_ok = check_file_list(args);
+    }
+    remove(out_file_name);
+    return test_ok;
+}
+
+bool test_read_command_line_3() {
+    sadplay_args args;
+    optind = 1;
+    char** argv = get_cmdline_argv(TEST_CMDLINE3_ARGC, TEST_CMDLINE3_ARGV);
+    int argc = TEST_CMDLINE3_ARGC;
+    read_command_line(&args, argc, argv);
+    bool test_ok = args.verbose && args.file_list.empty() && args.error;
+    return test_ok;
+}
+
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {
     tests["main_support|read_file_list_from_argv"] = test_read_file_list_from_argv;
     tests["main_support|read_file_list_from_file_1"] = test_read_file_list_from_file_1;
     tests["main_support|read_file_list_from_file_2"] = test_read_file_list_from_file_2;
-    tests["main_support|read_command_line"] = test_read_command_line;
+    tests["main_support|read_command_line_1"] = test_read_command_line_1;
+    tests["main_support|read_command_line_2"] = test_read_command_line_2;
+    tests["main_support|read_command_line_3"] = test_read_command_line_3;
 }

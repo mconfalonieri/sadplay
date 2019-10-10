@@ -47,6 +47,11 @@ struct sadplay_args {
      * Audio file list.
      */
     std::list<std::string> file_list;
+
+    /**
+     * Command line parsing error.
+     */
+    bool error;
 };
 
 /**

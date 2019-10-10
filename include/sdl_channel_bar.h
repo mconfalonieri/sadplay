@@ -26,7 +26,7 @@
 
 #include <SDL.h>
 
-#include "display.h"
+#include "channel_bar.h"
 
 #ifdef SADPLAY_TEST
 
@@ -36,19 +36,9 @@ class sdl_channel_bar_test_access;
 #endif // SADPLAY_TEST
 
 /**
- * Function that must be called by the SDL timer to update the channel bar.
- * 
- * @param   time_elapsed        time elapsed since last update in milliseconds
- * @param   param               the channel bar that needs to be updated
- * 
- * @return  if 0 is returned, the timer is cancelled.
- */
-extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
-
-/**
  * SDL channel bar. It uses SDL concurrency routines and callback mechanisms.
  */
-class sdl_channel_bar {
+class sdl_channel_bar : public channel_bar {
     public:
         /**
          * Channel bar constructor. It builds a new instance of the SDL
@@ -61,7 +51,7 @@ class sdl_channel_bar {
         /**
          * Destructor.
          */
-        ~sdl_channel_bar();
+        virtual ~sdl_channel_bar();
 
         /**
          * Updates a channel.
@@ -76,21 +66,12 @@ class sdl_channel_bar {
          * 
          * @param   values    the values for the channels
          */
-        void update_all(int values[]);
+        void update_all(const int values[]);
 
         /**
          * Sets all the channel values to zero.
          */
         void reset_channels();
-
-    private:
-        /// the callback can access private members.
-        friend int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
-
-#ifdef SADPLAY_TEST
-        /// Provide access to test class
-        friend class sdl_channel_bar_test_access;
-#endif // SADPLAY_TEST
 
         /**
          * Lowers the channel bar according to the time elapsed.
@@ -99,6 +80,12 @@ class sdl_channel_bar {
          *                              milliseconds
          */
         void time_elapsed(Uint32 time_elapsed);
+
+    private:
+#ifdef SADPLAY_TEST
+        /// Provide access to test class
+        friend class sdl_channel_bar_test_access;
+#endif // SADPLAY_TEST
 
         /**
          * Mutex used to synchronize the operations on the channel bar.
