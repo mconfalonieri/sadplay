@@ -1,7 +1,7 @@
 /*
  * sadplay - AdLib music player with graphics.
  * 
- * sdl_driver.h - header for SDL display driver and channel bar.
+ * sdl_driver.h - header for SDL display driver.
  * 
  * Copyright (C) 2019 Marco Confalonieri <marco at marcoconfalonieri.it>
  *
@@ -29,10 +29,61 @@
 #include "display.h"
 
 /**
+ * Function that must be called by the SDL timer to update the channel bar.
+ * 
+ * @param   time_elapsed        time elapsed since last update in milliseconds
+ * @param   param               the channel bar that needs to be updated
+ * 
+ * @return  if 0 is returned, the timer is cancelled.
+ */
+extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+
+/**
  * SDL display driver.
  */
 class sdl_display_driver : public display {
+    public:
+        /**
+         * Constructor.
+         */
+        sdl_display_driver();
+
+        /**
+         * Destructor.
+         */
+        ~sdl_display_driver();
+
+        /**
+         * Initializes the view.
+         */
+        void initialize();
+
+        /**
+         * Updates the channel bar.
+         */
+        void update_channel_bar();
+
+        /**
+         * Returns the channel bar instance.
+         */
+        channel_bar* get_channel_bar();
+
+    protected:
+        /**
+         * Updates the channel bar. It is called by the callback.
+         */
+        void update_channel_bar_decay();
+    
     private:
+
+        // Declares the function as friend.
+        friend int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+
+        /**
+         * Mutex.
+         */
+        SDL_mutex* mutex;
+
 };
 
 #endif // _SADPLAY_SDL_DRIVER_H_

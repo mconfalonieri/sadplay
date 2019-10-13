@@ -1,7 +1,7 @@
 /*
  * sadplay - AdLib music player with graphics.
  * 
- * display.h - abstract display interface.
+ * sdl_driver.cc - Implementation for SDL display driver.
  * 
  * Copyright (C) 2019 Marco Confalonieri <marco at marcoconfalonieri.it>
  *
@@ -19,35 +19,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef _SADPLAY_DISPLAY_H_
-#define _SADPLAY_DISPLAY_H_
+#include "sdl_driver.h"
 
-#include "channel_bar.h"
+// Implementation of the callback.
+extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
+
+}
 
 /**
- * The display class represents an abstract view for the application.
+ * SDL display driver.
  */
-class display {
+class sdl_display_driver : public display {
     public:
         /**
          * Initializes the view.
          */
-        virtual void initialize() = 0;
+        void initialize();
 
         /**
          * Updates the channel bar.
          */
-        virtual void update_channel_bar() = 0;
+        void update_channel_bar();
 
         /**
          * Returns the channel bar instance.
          */
-        virtual channel_bar* get_channel_bar() = 0;
-
-        /**
-         * Shows the actual view.
-         */
-        virtual void show_view() = 0;
+        channel_bar* get_channel_bar();
+    
+    private:
 };
 
-#endif // _SADPLAY_DISPLAY_H_
+void update_channel_bar_decay();
