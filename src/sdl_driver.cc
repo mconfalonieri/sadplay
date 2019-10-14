@@ -23,30 +23,41 @@
 
 // Implementation of the callback.
 extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
+    sdl_display_driver* driver = (sdl_display_driver*) param;
+    driver->update_channel_bar_decay(time_elapsed);
+    return 1;
+}
+
+// Constructor.
+sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0) {
 
 }
 
-/**
- * SDL display driver.
- */
-class sdl_display_driver : public display {
-    public:
+// Destructor.
+sdl_display_driver::~sdl_display_driver() {
+    if (timer_id != 0) {
+        SDL_RemoveTimer(timer_id);
+    }
+}
+
         /**
          * Initializes the view.
          */
-        void initialize();
+        void sdl_display_driver::initialize();
 
         /**
          * Updates the channel bar.
          */
-        void update_channel_bar();
+        void sdl_display_driver::update_channel_bar();
 
         /**
          * Returns the channel bar instance.
          */
-        channel_bar* get_channel_bar();
-    
-    private:
-};
+        channel_bar* sdl_display_driver::get_channel_bar();
 
-void update_channel_bar_decay();
+    protected:
+        /**
+         * Updates the channel bar. It is called by the callback.
+         */
+        void sdl_display_driver::update_channel_bar_decay(Uint32 time_elapsed);
+    

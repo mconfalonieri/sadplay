@@ -72,7 +72,7 @@ class sdl_display_driver : public display {
         /**
          * Updates the channel bar. It is called by the callback.
          */
-        void update_channel_bar_decay();
+        void update_channel_bar_decay(Uint32 time_elapsed);
     
     private:
 
@@ -80,9 +80,14 @@ class sdl_display_driver : public display {
         friend int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
 
         /**
-         * Mutex.
+         * Mutex for on-screen operations.
          */
         SDL_mutex* mutex;
+
+        /**
+         * Timer ID.
+         */
+        SDL_TimerID timer_id;
 
 };
 
