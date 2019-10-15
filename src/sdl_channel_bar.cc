@@ -22,7 +22,7 @@
 #include "sdl_channel_bar.h"
 
 // Constructor: it creates the channel vector and initializes the mutex.
-sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(8) {
+sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(num_channels) {
     this->mutex = SDL_CreateMutex();
     reset_channels();
 }
@@ -57,8 +57,9 @@ void sdl_channel_bar::update_all(const int values[]) {
 
 // Reset all channels
 void sdl_channel_bar::reset_channels() {
-    int zeroes[this->channels.size()] = {};
+    int* zeroes = new int[this->channels.size()]();
     this->update_all(zeroes);
+    delete[] zeroes;
 }
 
 // Executes the operations associated with the timer.

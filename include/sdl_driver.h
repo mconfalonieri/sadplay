@@ -47,7 +47,7 @@ class sdl_display_driver : public display {
         /**
          * Screen width.
          */
-        const static int SCREEN_WIDTH = 640;
+        const static int SCREEN_WIDTH = 800;
 
         /**
          * Screen height.

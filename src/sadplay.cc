@@ -45,13 +45,14 @@ sadplay::~sadplay() {
 
 // Application runner.
 int sadplay::run(sadplay_args* args) {
+    const int NUM_CHANNELS = 20;
     // Sets the verbose flag.
     this->verbose = args->verbose;
     log("Initialize window");
-    driver->initialize(8);
+    driver->initialize(NUM_CHANNELS);
     channel_bar* bar = driver->get_channel_bar();
     log("Preparing channel bar");
-    for (int c = 0; c < 8; c++) {
+    for (int c = 0; c < NUM_CHANNELS; c++) {
         bar->update(c, 100);
     }
     log("Updating channel bar");

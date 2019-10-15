@@ -30,6 +30,11 @@
 class display {
     public:
         /**
+         * Virtual destructor.
+         */
+        virtual ~display() {}
+
+        /**
          * Initializes the view.
          * 
          * @param   num_channels    number of channels

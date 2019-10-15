@@ -103,14 +103,14 @@ void sdl_display_driver::draw_bar(int x, int width, int level) {
 
     int dy;
     for (dy = y_level; dy > 0; dy--) {
-        int y = y_max - dy;
+        // LED effect
+        if (!(dy % 4)) continue;
 
+        int y = y_max - dy;
         int actual_level = (y_span - dy) * 100 / y_span;
 
         calculate_color(color, actual_level);
-
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
-
         SDL_RenderDrawLine(renderer, x, y, x + width, y);
     }
 
