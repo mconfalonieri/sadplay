@@ -81,6 +81,21 @@ class sdl_channel_bar : public channel_bar {
          */
         void time_elapsed(Uint32 time_elapsed);
 
+        /**
+         * Returns the number of channels.
+         * 
+         * @return  the number of channels
+         */
+        int get_numchannels();
+
+        /**
+         * Returns the channel.
+         * 
+         * @param  channels             an array sized to contain the channel
+         *                              values
+         */
+        void get_channels(int* channels);
+
     private:
 #ifdef SADPLAY_TEST
         /// Provide access to test class
@@ -100,7 +115,7 @@ class sdl_channel_bar : public channel_bar {
         /**
          * Milliseconds that the bar will last from 100% to 0.
          */
-        static const int DECAY_TIMER = 1000;
+        static const int DECAY_TIMER = 500;
 };
 
 #endif // _SADPLAY_SDL_CHANNEL_BAR_H_

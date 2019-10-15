@@ -257,11 +257,67 @@ bool test_sdl_channel_bar_time_elapsed() {
     destroy_test_harness(accessor, channel_bar);
 }
 
+/**
+ * Tests the get channels method.
+ * 
+ * @return  true if the test is successful
+ */
+bool test_sdl_channel_bar_get_numchannels() {
+    sdl_channel_bar* channel_bar;
+    sdl_channel_bar_test_access* accessor;
+
+    create_test_harness(channel_bar, accessor);
+
+    int num_channels = channel_bar->get_numchannels();
+    bool test_ok = (num_channels == TEST_CHANNELS_NUM);
+    
+    // Tests mutex failure.
+    if (test_ok) {
+        SDL_mutex* mutex = accessor->get_mutex();
+        accessor->set_mutex(NULL);
+        num_channels = channel_bar->get_numchannels();
+        test_ok = (num_channels == 0);
+        accessor->set_mutex(mutex);
+    }
+    
+    destroy_test_harness(accessor, channel_bar);
+}
+
+/**
+ * Tests the get channels method.
+ * 
+ * @return  true if the test is successful
+ */
+bool test_sdl_channel_bar_get_channels() {
+    int test_bar[8];
+    sdl_channel_bar* channel_bar;
+    sdl_channel_bar_test_access* accessor;
+
+    create_test_harness(channel_bar, accessor);
+
+    channel_bar->update_all(TEST_CHANNEL_VALUES);
+    channel_bar->get_channels(test_bar);
+    bool test_ok = check_channels(accessor, test_bar);
+    
+    // Tests mutex failure.
+    if (test_ok) {
+        channel_bar->update_all(TEST_CHANNEL_VALUES2);
+        SDL_mutex* mutex = accessor->get_mutex();
+        accessor->set_mutex(NULL);
+        channel_bar->get_channels(test_bar);
+        test_ok = check_channels(accessor, TEST_CHANNEL_VALUES);
+        accessor->set_mutex(mutex);
+    }
+    
+    destroy_test_harness(accessor, channel_bar);
+}
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {
     tests["sdl_channel_bar|sdl_channel_bar.sdl_channel_bar"] = test_sdl_channel_bar_constructor;
     tests["sdl_channel_bar|sdl_channel_bar.update_channel"] = test_sdl_channel_bar_update_channel;
-    tests["sdl_channel_bar|sdl_channel_bar.update_channel"] = test_sdl_channel_bar_update_all;
+    tests["sdl_channel_bar|sdl_channel_bar.update_all"] = test_sdl_channel_bar_update_all;
     tests["sdl_channel_bar|sdl_channel_bar.reset_channels"] = test_sdl_channel_bar_reset_channels;
-    tests["sdl_channel_bar|sdl_channel_bar_callback"] = test_sdl_channel_bar_callback;
+    tests["sdl_channel_bar|sdl_channel_bar.time_elapsed"] = test_sdl_channel_bar_time_elapsed;
+    tests["sdl_channel_bar|sdl_channel_bar.get_numchannels"] = test_sdl_channel_bar_get_numchannels;
+    tests["sdl_channel_bar|sdl_channel_bar.get_channels"] = test_sdl_channel_bar_get_channels;
 }

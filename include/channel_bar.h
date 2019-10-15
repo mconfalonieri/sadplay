@@ -47,6 +47,13 @@ class channel_bar {
          * Sets all the channel values to zero.
          */
         virtual void reset_channels() = 0;
+
+        /**
+         * Returns the number of channels.
+         * 
+         * @return  the number of channels
+         */
+        virtual int get_numchannels() = 0;
 };
 
 #endif // _SADPLAY_CHANNEL_BAR_H_

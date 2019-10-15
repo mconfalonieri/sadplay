@@ -21,13 +21,6 @@
         
 #include "sdl_channel_bar.h"
 
-// The callback for the SDL timer.
-extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
-    sdl_channel_bar* channel_bar = (sdl_channel_bar*) param;
-    channel_bar->time_elapsed(time_elapsed);
-    return 1;
-}
-
 // Constructor: it creates the channel vector and initializes the mutex.
 sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(8) {
     this->mutex = SDL_CreateMutex();
@@ -52,6 +45,9 @@ void sdl_channel_bar::update(int channel, int value) {
 // Updates all channels.
 void sdl_channel_bar::update_all(const int values[]) {
     int status = SDL_LockMutex(this->mutex);
+    if (status != 0) {
+        return;
+    }
     for (int c = 0; c < this->channels.size(); c++) {
         int new_value = (values[c] > 100)? 100 : values[c];
         this->channels[c] = new_value;
@@ -77,6 +73,28 @@ void sdl_channel_bar::time_elapsed(Uint32 time_elapsed) {
             int new_value = ch - (time_elapsed * 100 / DECAY_TIMER);
             ch = (new_value < 0)? 0 : new_value;
         }
+    }
+    SDL_UnlockMutex(this->mutex);
+}
+
+int sdl_channel_bar::get_numchannels() {
+    int status = SDL_LockMutex(this->mutex);
+    if (status != 0) {
+        return 0;
+    }
+    int num_channels = this->channels.size();
+    SDL_UnlockMutex(this->mutex);
+    return num_channels;
+}
+
+void sdl_channel_bar::get_channels(int* channels) {
+    int status = SDL_LockMutex(this->mutex);
+    if (status != 0) {
+        return;
+    }
+    for (int i = 0; i < this->channels.size(); i++) {
+        int value = this->channels[i];
+        channels[i] = value;
     }
     SDL_UnlockMutex(this->mutex);
 }

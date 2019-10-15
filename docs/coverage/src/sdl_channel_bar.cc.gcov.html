@@ -31,18 +31,18 @@
             <td class="headerValue">app.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">31</td>
-            <td class="headerCovTableEntry">36</td>
-            <td class="headerCovTableEntryMed">86.1 %</td>
+            <td class="headerCovTableEntry">45</td>
+            <td class="headerCovTableEntry">45</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-10 00:43:11</td>
+            <td class="headerValue">2019-10-15 02:05:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">7</td>
-            <td class="headerCovTableEntryMed">85.7 %</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -82,66 +82,81 @@
 <span class="lineNum">      20 </span>            :  */
 <span class="lineNum">      21 </span>            :         
 <span class="lineNum">      22 </span>            : #include &quot;sdl_channel_bar.h&quot;
-<a name="23"><span class="lineNum">      23 </span>            : </a>
-<span class="lineNum">      24 </span>            : // The callback for the SDL timer.
-<span class="lineNum">      25 </span><span class="lineCov">         14 : extern &quot;C&quot; int sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {</span>
-<span class="lineNum">      26 </span><span class="lineCov">         14 :     sdl_channel_bar* channel_bar = (sdl_channel_bar*) param;</span>
-<span class="lineNum">      27 </span><span class="lineCov">         14 :     channel_bar-&gt;time_elapsed(time_elapsed);</span>
-<span class="lineNum">      28 </span><span class="lineCov">         14 :     return 1;</span>
-<span class="lineNum">      29 </span>            : }
-<span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span>            : // Constructor: it creates the channel vector and initializes the mutex.
-<span class="lineNum">      32 </span><span class="lineCov">        174 : sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(8) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">         58 :     this-&gt;mutex = SDL_CreateMutex();</span>
-<span class="lineNum">      34 </span><span class="lineCov">         58 :     reset_channels();</span>
-<span class="lineNum">      35 </span><span class="lineCov">         58 : }</span>
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            : // Destructor: destroys the mutex.
-<span class="lineNum">      38 </span><span class="lineCov">        174 : sdl_channel_bar::~sdl_channel_bar() {</span>
-<span class="lineNum">      39 </span><span class="lineCov">         58 :     SDL_DestroyMutex(this-&gt;mutex);</span>
-<span class="lineNum">      40 </span><span class="lineCov">         58 : }</span>
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            : // Updates the specified channel.
-<span class="lineNum">      43 </span><span class="lineNoCov">          0 : void sdl_channel_bar::update(int channel, int value) {</span>
-<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      45 </span><span class="lineNoCov">          0 :     if (status != 0) {</span>
-<span class="lineNum">      46 </span>            :         return;
-<span class="lineNum">      47 </span>            :     }
-<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     this-&gt;channels[channel] = value;</span>
-<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     SDL_UnlockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      50 </span>            : }
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span>            : // Updates all channels.
-<span class="lineNum">      53 </span><span class="lineCov">        148 : void sdl_channel_bar::update_all(const int values[]) {</span>
-<span class="lineNum">      54 </span><span class="lineCov">        148 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      55 </span><span class="lineCov">       2664 :     for (int c = 0; c &lt; this-&gt;channels.size(); c++) {</span>
-<span class="lineNum">      56 </span><span class="lineCov">       1184 :         int new_value = (values[c] &gt; 100)? 100 : values[c];</span>
-<span class="lineNum">      57 </span><span class="lineCov">       2368 :         this-&gt;channels[c] = new_value;</span>
-<span class="lineNum">      58 </span>            :     }
-<span class="lineNum">      59 </span><span class="lineCov">        148 :     SDL_UnlockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      60 </span><span class="lineCov">        148 : }</span>
-<span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span>            : // Reset all channels
-<span class="lineNum">      63 </span><span class="lineCov">         90 : void sdl_channel_bar::reset_channels() {</span>
-<span class="lineNum">      64 </span><span class="lineCov">        180 :     int zeroes[this-&gt;channels.size()] = {};</span>
-<span class="lineNum">      65 </span><span class="lineCov">        180 :     this-&gt;update_all(zeroes);</span>
-<span class="lineNum">      66 </span><span class="lineCov">         90 : }</span>
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            : // Executes the operations associated with the timer.
-<span class="lineNum">      69 </span><span class="lineCov">         14 : void sdl_channel_bar::time_elapsed(Uint32 time_elapsed) {</span>
-<span class="lineNum">      70 </span><span class="lineCov">         14 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      71 </span><span class="lineCov">         14 :     if (status != 0) {</span>
-<span class="lineNum">      72 </span>            :         return;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : // Constructor: it creates the channel vector and initializes the mutex.
+<span class="lineNum">      25 </span><span class="lineCov">         21 : sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(8) {</span>
+<span class="lineNum">      26 </span><span class="lineCov">          7 :     this-&gt;mutex = SDL_CreateMutex();</span>
+<span class="lineNum">      27 </span><span class="lineCov">          7 :     reset_channels();</span>
+<span class="lineNum">      28 </span><span class="lineCov">          7 : }</span>
+<a name="29"><span class="lineNum">      29 </span>            : </a>
+<span class="lineNum">      30 </span>            : // Destructor: destroys the mutex.
+<span class="lineNum">      31 </span><span class="lineCov">         28 : sdl_channel_bar::~sdl_channel_bar() {</span>
+<span class="lineNum">      32 </span><span class="lineCov">          7 :     SDL_DestroyMutex(this-&gt;mutex);</span>
+<span class="lineNum">      33 </span><span class="lineCov">         14 : }</span>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : // Updates the specified channel.
+<span class="lineNum">      36 </span><span class="lineCov">         16 : void sdl_channel_bar::update(int channel, int value) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">         16 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      38 </span><span class="lineCov">         16 :     if (status != 0) {</span>
+<span class="lineNum">      39 </span>            :         return;
+<span class="lineNum">      40 </span>            :     }
+<span class="lineNum">      41 </span><span class="lineCov">         16 :     this-&gt;channels[channel] = value;</span>
+<span class="lineNum">      42 </span><span class="lineCov">          8 :     SDL_UnlockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      43 </span>            : }
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : // Updates all channels.
+<span class="lineNum">      46 </span><span class="lineCov">         15 : void sdl_channel_bar::update_all(const int values[]) {</span>
+<span class="lineNum">      47 </span><span class="lineCov">         15 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      48 </span><span class="lineCov">        270 :     for (int c = 0; c &lt; this-&gt;channels.size(); c++) {</span>
+<span class="lineNum">      49 </span><span class="lineCov">        120 :         int new_value = (values[c] &gt; 100)? 100 : values[c];</span>
+<span class="lineNum">      50 </span><span class="lineCov">        240 :         this-&gt;channels[c] = new_value;</span>
+<span class="lineNum">      51 </span>            :     }
+<span class="lineNum">      52 </span><span class="lineCov">         15 :     SDL_UnlockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      53 </span><span class="lineCov">         15 : }</span>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : // Reset all channels
+<span class="lineNum">      56 </span><span class="lineCov">          9 : void sdl_channel_bar::reset_channels() {</span>
+<span class="lineNum">      57 </span><span class="lineCov">         18 :     int zeroes[this-&gt;channels.size()] = {};</span>
+<span class="lineNum">      58 </span><span class="lineCov">         18 :     this-&gt;update_all(zeroes);</span>
+<span class="lineNum">      59 </span><span class="lineCov">          9 : }</span>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : // Executes the operations associated with the timer.
+<span class="lineNum">      62 </span><span class="lineCov">          1 : void sdl_channel_bar::time_elapsed(Uint32 time_elapsed) {</span>
+<span class="lineNum">      63 </span><span class="lineCov">          1 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      64 </span><span class="lineCov">          1 :     if (status != 0) {</span>
+<span class="lineNum">      65 </span>            :         return;
+<span class="lineNum">      66 </span>            :     }
+<span class="lineNum">      67 </span><span class="lineCov">         26 :     for (int c = 0; c &lt; this-&gt;channels.size(); c++) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">         16 :         int&amp; ch = this-&gt;channels[c];</span>
+<span class="lineNum">      69 </span><span class="lineCov">          8 :         if (ch &gt; 0) {</span>
+<span class="lineNum">      70 </span><span class="lineCov">          8 :             int new_value = ch - (time_elapsed * 100 / DECAY_TIMER);</span>
+<span class="lineNum">      71 </span><span class="lineCov">          8 :             ch = (new_value &lt; 0)? 0 : new_value;</span>
+<span class="lineNum">      72 </span>            :         }
 <span class="lineNum">      73 </span>            :     }
-<span class="lineNum">      74 </span><span class="lineCov">        364 :     for (int c = 0; c &lt; this-&gt;channels.size(); c++) {</span>
-<span class="lineNum">      75 </span><span class="lineCov">        224 :         int&amp; ch = this-&gt;channels[c];</span>
-<span class="lineNum">      76 </span><span class="lineCov">        112 :         if (ch &gt; 0) {</span>
-<span class="lineNum">      77 </span><span class="lineCov">        112 :             int new_value = ch - (time_elapsed * 100 / DECAY_TIMER);</span>
-<span class="lineNum">      78 </span><span class="lineCov">        112 :             ch = (new_value &lt; 0)? 0 : new_value;</span>
-<span class="lineNum">      79 </span>            :         }
-<span class="lineNum">      80 </span>            :     }
-<span class="lineNum">      81 </span><span class="lineCov">         14 :     SDL_UnlockMutex(this-&gt;mutex);</span>
-<span class="lineNum">      82 </span>            : }
+<span class="lineNum">      74 </span><span class="lineCov">          1 :     SDL_UnlockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      75 </span>            : }
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineCov">          2 : int sdl_channel_bar::get_numchannels() {</span>
+<span class="lineNum">      78 </span><span class="lineCov">          2 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      79 </span><span class="lineCov">          2 :     if (status != 0) {</span>
+<span class="lineNum">      80 </span>            :         return 0;
+<span class="lineNum">      81 </span>            :     }
+<span class="lineNum">      82 </span><span class="lineCov">          2 :     int num_channels = this-&gt;channels.size();</span>
+<span class="lineNum">      83 </span><span class="lineCov">          1 :     SDL_UnlockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      84 </span><span class="lineCov">          1 :     return num_channels;</span>
+<span class="lineNum">      85 </span>            : }
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineCov">          2 : void sdl_channel_bar::get_channels(int* channels) {</span>
+<span class="lineNum">      88 </span><span class="lineCov">          2 :     int status = SDL_LockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      89 </span><span class="lineCov">          2 :     if (status != 0) {</span>
+<span class="lineNum">      90 </span>            :         return;
+<span class="lineNum">      91 </span>            :     }
+<span class="lineNum">      92 </span><span class="lineCov">         26 :     for (int i = 0; i &lt; this-&gt;channels.size(); i++) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">         16 :         int value = this-&gt;channels[i];</span>
+<span class="lineNum">      94 </span><span class="lineCov">          8 :         channels[i] = value;</span>
+<span class="lineNum">      95 </span>            :     }
+<span class="lineNum">      96 </span><span class="lineCov">          1 :     SDL_UnlockMutex(this-&gt;mutex);</span>
+<span class="lineNum">      97 </span>            : }
 </pre>
       </td>
     </tr>

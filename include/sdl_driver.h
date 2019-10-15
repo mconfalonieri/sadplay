@@ -27,6 +27,7 @@
 #include <SDL.h>
 
 #include "display.h"
+#include "sdl_channel_bar.h"
 
 /**
  * Function that must be called by the SDL timer to update the channel bar.
@@ -36,13 +37,33 @@
  * 
  * @return  if 0 is returned, the timer is cancelled.
  */
-extern "C" int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+extern "C" Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
 
 /**
  * SDL display driver.
  */
 class sdl_display_driver : public display {
     public:
+        /**
+         * Screen width.
+         */
+        const static int SCREEN_WIDTH = 640;
+
+        /**
+         * Screen height.
+         */
+        const static int SCREEN_HEIGHT = 400;
+
+        /**
+         * Screen border.
+         */
+        const static int BORDER = 20;
+
+        /**
+         * Time interval.
+         */
+        const static Uint32 TIMER_INTERVAL = 10;
+
         /**
          * Constructor.
          */
@@ -51,12 +72,16 @@ class sdl_display_driver : public display {
         /**
          * Destructor.
          */
-        ~sdl_display_driver();
+        virtual ~sdl_display_driver();
 
         /**
          * Initializes the view.
+         * 
+         * @param   num_channels    the number of channels.
+         *
+         * @return  true if correctly initialized
          */
-        void initialize();
+        bool initialize(int num_channels);
 
         /**
          * Updates the channel bar.
@@ -65,19 +90,82 @@ class sdl_display_driver : public display {
 
         /**
          * Returns the channel bar instance.
+         * 
+         * @return  the channel bar
          */
         channel_bar* get_channel_bar();
 
     protected:
+
         /**
-         * Updates the channel bar. It is called by the callback.
+         * Internal color type.
+         */
+        typedef struct {
+            /**
+             * Red component.
+             */
+            Uint8 r;
+
+            /**
+             * Green component.
+             */
+            Uint8 g;
+
+            /**
+             * Blue component.
+             */
+            Uint8 b;
+        } rgb;
+
+        /**
+         * Normalizes colors in the standard range.
+         * 
+         * @param   color               reference to the color
+         * @param   r                   red component
+         * @param   g                   green component
+         * @param   b                   blue component
+         */
+        void normalize_color(rgb &color, int r, int g, int b);
+
+        /**
+         * Lowers the channel bar. It is called by the callback.
+         * 
+         * @param   time_elapsed        the time elapsed since the last update
+         *                              in milliseconds
          */
         void update_channel_bar_decay(Uint32 time_elapsed);
-    
+
+        /**
+         * Draws a bar at the given position.
+         * 
+         * @param   x                   X coordinate
+         * @param   width               width of the bar
+         * @param   level               bar level in percentage
+         */
+        void draw_bar(int x, int width, int level);
+
+        /**
+         * Calculates the color given the level.
+         * 
+         * @param   color               reference to the color variable
+         * @param   level               bar level in percentage
+         */
+        void calculate_color(rgb &color, int level);
+
+        /**
+         * Draws the bars.
+         */
+        void draw_bars();
+
     private:
 
         // Declares the function as friend.
-        friend int sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+        friend Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
+
+        /**
+         * Horizontal span.
+         */
+        const static int H_SPAN = (SCREEN_WIDTH - (2 * BORDER));
 
         /**
          * Mutex for on-screen operations.
@@ -89,6 +177,20 @@ class sdl_display_driver : public display {
          */
         SDL_TimerID timer_id;
 
+        /**
+         * SDL Window.
+         */
+        SDL_Window* window;
+
+        /**
+         * Renderer for the window.
+         */
+        SDL_Renderer* renderer;
+
+        /**
+         * Internal channel bar.
+         */
+        sdl_channel_bar* cbar;
 };
 
 #endif // _SADPLAY_SDL_DRIVER_H_

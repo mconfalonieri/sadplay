@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-//#include "sdl_driver.h"
+#include "sdl_driver.h"
 
 using std::string;
 using std::map;
@@ -31,8 +31,8 @@ using std::map;
 const string sadplay::DEFAULT_DRIVER_NAME = "sdl";
 
 // Constructor.
-sadplay::sadplay(): verbose(false), log_stream() {
-    //this->driver = new sdl_display_driver();
+sadplay::sadplay(): verbose(false), log_stream(), driver(NULL) {
+    this->driver = new sdl_display_driver();
 }
 
 // Destructor.
@@ -40,14 +40,32 @@ sadplay::~sadplay() {
     if (this->log_stream.is_open()) {
         this->log_stream.close();
     }
-    // delete this->driver;
+    delete this->driver;
 }
 
 // Application runner.
 int sadplay::run(sadplay_args* args) {
     // Sets the verbose flag.
     this->verbose = args->verbose;
-    
+    log("Initialize window");
+    driver->initialize(8);
+    channel_bar* bar = driver->get_channel_bar();
+    log("Preparing channel bar");
+    for (int c = 0; c < 8; c++) {
+        bar->update(c, 100);
+    }
+    log("Updating channel bar");
+    driver->update_channel_bar();
+    int quit = 0;
+    SDL_Event e;
+    log("Wait for command");
+    while (!quit) {
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                quit = -1;
+            }
+        }
+    }
     return 0;
 }
 
@@ -62,3 +80,4 @@ void sadplay::log(string line) {
         this->log_stream << line << std::endl;
     }
 }
+

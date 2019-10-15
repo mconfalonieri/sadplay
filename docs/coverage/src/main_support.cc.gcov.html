@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-10-10 00:43:11</td>
+            <td class="headerValue">2019-10-15 02:05:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -92,67 +92,67 @@
 <span class="lineNum">      30 </span>            : using std::string;
 <span class="lineNum">      31 </span>            : 
 <span class="lineNum">      32 </span>            : // Reads the file list from a text file or the standard input.
-<span class="lineNum">      33 </span><span class="lineCov">          3 : void read_file_list_from_file(sadplay_args* args, string file, std::istream &amp;input) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">          6 : void read_file_list_from_file(sadplay_args* args, string file, std::istream &amp;input) {</span>
 <span class="lineNum">      34 </span>            :     std::istream* file_list;
 <span class="lineNum">      35 </span>            : 
 <span class="lineNum">      36 </span>            :     // Open a file or assign our stream to standard input.
-<span class="lineNum">      37 </span><span class="lineCov">          3 :     if (file == &quot;-&quot;) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">          6 :     if (file == &quot;-&quot;) {</span>
 <span class="lineNum">      38 </span>            :         file_list = &amp;input;
 <span class="lineNum">      39 </span>            :     } else {
-<span class="lineNum">      40 </span><span class="lineCov">          2 :         file_list = new ifstream(file);</span>
+<span class="lineNum">      40 </span><span class="lineCov">          4 :         file_list = new ifstream(file);</span>
 <span class="lineNum">      41 </span>            :     }
 <span class="lineNum">      42 </span>            : 
 <span class="lineNum">      43 </span>            :     // Read the stream line by line.
-<span class="lineNum">      44 </span><span class="lineCov">          3 :     string line;</span>
-<span class="lineNum">      45 </span><span class="lineCov">         24 :     while (std::getline(*file_list, line)) {</span>
-<span class="lineNum">      46 </span><span class="lineCov">          9 :         args-&gt;file_list.push_back(line);</span>
+<span class="lineNum">      44 </span><span class="lineCov">          6 :     string line;</span>
+<span class="lineNum">      45 </span><span class="lineCov">         48 :     while (std::getline(*file_list, line)) {</span>
+<span class="lineNum">      46 </span><span class="lineCov">         18 :         args-&gt;file_list.push_back(line);</span>
 <span class="lineNum">      47 </span>            :     }
 <span class="lineNum">      48 </span>            : 
 <span class="lineNum">      49 </span>            :     // if the file list is not in the standard input, closes the stream and
 <span class="lineNum">      50 </span>            :     // delete it. 
-<span class="lineNum">      51 </span><span class="lineCov">          3 :     if (file_list != &amp;input) {</span>
-<span class="lineNum">      52 </span><span class="lineCov">          2 :         ((ifstream*) file_list)-&gt;close();</span>
-<span class="lineNum">      53 </span><span class="lineCov">          2 :         delete file_list;</span>
+<span class="lineNum">      51 </span><span class="lineCov">          6 :     if (file_list != &amp;input) {</span>
+<span class="lineNum">      52 </span><span class="lineCov">          4 :         ((ifstream*) file_list)-&gt;close();</span>
+<span class="lineNum">      53 </span><span class="lineCov">          4 :         delete file_list;</span>
 <span class="lineNum">      54 </span>            :     }
-<span class="lineNum">      55 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">      55 </span><span class="lineCov">          6 : }</span>
 <span class="lineNum">      56 </span>            : 
 <span class="lineNum">      57 </span>            : // Reads the file list from the command line arguments.
-<span class="lineNum">      58 </span><span class="lineCov">          2 : void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int opt_index) {</span>
-<span class="lineNum">      59 </span><span class="lineCov">          8 :     for (int idx = opt_index; idx &lt; argc; idx++) {</span>
-<span class="lineNum">      60 </span><span class="lineCov">         18 :         args-&gt;file_list.push_back(string(argv[idx]));</span>
+<span class="lineNum">      58 </span><span class="lineCov">          4 : void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int opt_index) {</span>
+<span class="lineNum">      59 </span><span class="lineCov">         16 :     for (int idx = opt_index; idx &lt; argc; idx++) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">         36 :         args-&gt;file_list.push_back(string(argv[idx]));</span>
 <span class="lineNum">      61 </span>            :     }
-<span class="lineNum">      62 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">      62 </span><span class="lineCov">          4 : }</span>
 <span class="lineNum">      63 </span>            : 
 <span class="lineNum">      64 </span>            : // Reads the command line arguments.
-<span class="lineNum">      65 </span><span class="lineCov">          3 : void read_command_line(sadplay_args* args, int argc, char* argv[]) {</span>
+<span class="lineNum">      65 </span><span class="lineCov">          6 : void read_command_line(sadplay_args* args, int argc, char* argv[]) {</span>
 <span class="lineNum">      66 </span>            :     int c;
-<span class="lineNum">      67 </span><span class="lineCov">          5 :     string file;</span>
-<span class="lineNum">      68 </span><span class="lineCov">          3 :     bool file_list_used = false;</span>
-<span class="lineNum">      69 </span><span class="lineCov">          8 :     while ((c = getopt(argc, argv, &quot;vl:f:&quot;)) != -1) {</span>
-<span class="lineNum">      70 </span><span class="lineCov">          6 :         switch (c) {</span>
-<span class="lineNum">      71 </span><span class="lineCov">          3 :             case 'v':</span>
-<span class="lineNum">      72 </span><span class="lineCov">          3 :                 args-&gt;verbose = true;</span>
-<span class="lineNum">      73 </span><span class="lineCov">          3 :                 break;</span>
+<span class="lineNum">      67 </span><span class="lineCov">         10 :     string file;</span>
+<span class="lineNum">      68 </span><span class="lineCov">          6 :     bool file_list_used = false;</span>
+<span class="lineNum">      69 </span><span class="lineCov">         16 :     while ((c = getopt(argc, argv, &quot;vl:f:&quot;)) != -1) {</span>
+<span class="lineNum">      70 </span><span class="lineCov">         12 :         switch (c) {</span>
+<span class="lineNum">      71 </span><span class="lineCov">          6 :             case 'v':</span>
+<span class="lineNum">      72 </span><span class="lineCov">          6 :                 args-&gt;verbose = true;</span>
+<span class="lineNum">      73 </span><span class="lineCov">          6 :                 break;</span>
 <span class="lineNum">      74 </span>            :             case 'l':
-<span class="lineNum">      75 </span><span class="lineCov">          3 :                 args-&gt;log_file = string(optarg);</span>
-<span class="lineNum">      76 </span><span class="lineCov">          1 :                  break;</span>
+<span class="lineNum">      75 </span><span class="lineCov">          6 :                 args-&gt;log_file = string(optarg);</span>
+<span class="lineNum">      76 </span><span class="lineCov">          2 :                  break;</span>
 <span class="lineNum">      77 </span>            :             case 'f':
-<span class="lineNum">      78 </span><span class="lineCov">          3 :                 file = string(optarg);</span>
-<span class="lineNum">      79 </span><span class="lineCov">          1 :                 file_list_used = true;</span>
-<span class="lineNum">      80 </span><span class="lineCov">          1 :                 break;</span>
-<span class="lineNum">      81 </span><span class="lineCov">          1 :             case '?':</span>
-<span class="lineNum">      82 </span><span class="lineCov">          1 :                 args-&gt;error = true;</span>
-<span class="lineNum">      83 </span><span class="lineCov">          1 :                 return;</span>
+<span class="lineNum">      78 </span><span class="lineCov">          6 :                 file = string(optarg);</span>
+<span class="lineNum">      79 </span><span class="lineCov">          2 :                 file_list_used = true;</span>
+<span class="lineNum">      80 </span><span class="lineCov">          2 :                 break;</span>
+<span class="lineNum">      81 </span><span class="lineCov">          2 :             case '?':</span>
+<span class="lineNum">      82 </span><span class="lineCov">          2 :                 args-&gt;error = true;</span>
+<span class="lineNum">      83 </span><span class="lineCov">          2 :                 return;</span>
 <span class="lineNum">      84 </span>            :         }
 <span class="lineNum">      85 </span>            :     }
 <span class="lineNum">      86 </span>            : 
 <span class="lineNum">      87 </span>            :     // Either read the file list from a file or from the command line.
-<span class="lineNum">      88 </span><span class="lineCov">          2 :     if (file_list_used) {</span>
-<span class="lineNum">      89 </span><span class="lineCov">          2 :         read_file_list_from_file(args, file);</span>
+<span class="lineNum">      88 </span><span class="lineCov">          4 :     if (file_list_used) {</span>
+<span class="lineNum">      89 </span><span class="lineCov">          4 :         read_file_list_from_file(args, file);</span>
 <span class="lineNum">      90 </span>            :     } else {
-<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          1 :         read_file_list_from_argv(args, argc, argv, optind);</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          2 :         read_file_list_from_argv(args, argc, argv, optind);</span></a>
 <span class="lineNum">      92 </span>            :     }
-<span class="lineNum">      93 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">      93 </span><span class="lineCov">          4 : }</span>
 </pre>
       </td>
     </tr>

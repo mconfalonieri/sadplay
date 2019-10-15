@@ -31,8 +31,12 @@ class display {
     public:
         /**
          * Initializes the view.
+         * 
+         * @param   num_channels    number of channels
+         *
+         * @return  true if correctly initialized
          */
-        virtual void initialize() = 0;
+        virtual bool initialize(int num_channels) = 0;
 
         /**
          * Updates the channel bar.
@@ -41,13 +45,11 @@ class display {
 
         /**
          * Returns the channel bar instance.
+         * 
+         * @return  the channel bar
          */
         virtual channel_bar* get_channel_bar() = 0;
 
-        /**
-         * Shows the actual view.
-         */
-        virtual void show_view() = 0;
 };
 
 #endif // _SADPLAY_DISPLAY_H_

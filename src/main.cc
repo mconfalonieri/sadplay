@@ -62,7 +62,8 @@ int main(int argc, char* argv[]) {
 
     read_command_line(&args, argc, argv);
 
-    //sadplay.run(&args);
+    sadplay app;
+    app.run(&args);
 
     return 0;
 }
