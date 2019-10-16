@@ -1,7 +1,7 @@
 /*
  * sadplay - AdLib music player with graphics.
  * 
- * spectrum_analyzer.h - frequency analyzer header
+ * spectrum_analyzer.cc - frequency analyzer implementation
  * 
  * Copyright (C) 2019 Marco Confalonieri <marco at marcoconfalonieri.it>
  *
@@ -19,68 +19,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef _SADPLAY_ANALYZER_H_
-#define _SADPLAY_ANALYZER_H_
+#include "spectrum_analyzer.h"
 
-#include <fftw3.h>
+// Constructor. It does all the calculations required to size the buffers and
+// allocate the FFT plan.
+spectrum_analyzer::spectrum_analyzer(int duration): plan(NULL) {
+    in_raw_buffer_size = get_in_raw_buffer_size(duration);
+    in_buffer_size = get_in_buffer_size();
+    out_buffer_size = get_out_buffer_size();
 
-/**
- * Spectrum analyzer class. This class analyzes the spectrum of the data
- * provided. The samples are always assumed to be PCM-encoded, signed, 16-bit
- * with a sampling rate of 44.1kHz.
- */
-class spectrum_analyzer {
-    public:
-        /**
-         * Sampling rate.
-         */
-        const static int SAMPLING_RATE = 44100;
+    // Allocate the in and out buffers.
+    in_buffer = fftw_alloc_real(in_buffer_size);
+    out_buffer = fftw_alloc_complex(out_buffer_size);
 
-        /**
-         * Number of channels.
-         */
-        const static int CHANNELS = 2;
-
-        /**
-         * Bytes per sample.
-         */
-        const static int BYTES_PER_SAMPLE = 2;
-
-        /**
-         * Constructor. It builds a new spectrum analyzer with a sample
-         * duration.
-         * 
-         * @param   duration        the duration in milliseconds
-         */
-        spectrum_analyzer(int duration);
+    plan = fftw_plan_dft_r2c_1d(in_buffer_size, in_buffer, out_buffer, )
+}
 
         /**
          * Destructor.
          */
-        ~spectrum_analyzer();
+        spectrum_analyzer::~spectrum_analyzer();
 
         /**
          * Acquires a new sample.
          * 
          * @param   raw_buffer      the raw sample buffer
          */
-        void acquire(short* raw_buffer);
+        void spectrum_analyzer::acquire(short* raw_buffer);
 
     protected:
         /**
          * Buffer size for one second.
          */
         const static int RAW_BUFFER_SIZE_1S = SAMPLING_RATE * CHANNELS * BYTES_PER_SAMPLE;
-
-        /**
-         * Index of the real component of a FFTW complex number.
-         */
-        const static int FFTW_REAL = 0;
-
-        /**
-         * Index of the imaginary component of a FFTW complex number.
-         */
-        const static int FFTW_IMAG = 1;
 
     private:
         /**
@@ -115,30 +86,17 @@ class spectrum_analyzer {
          */
         inline short interpolate_stereo(short in[2]) { return (in[0] + in[1]) / 2; }
 
-        /**
-         * The raw buffer size.
-         */
         int in_raw_buffer_size;
-
         /**
          * The input buffer size.
          */ 
         int in_buffer_size;
 
         /**
-         * The input buffer.
-         */
-        double* in_buffer;
-
-        /**
          * The output buffer size.
          */
         int out_buffer_size;
 
-        /**
-         * The output buffer.
-         */
-        fftw_complex* out_buffer;
 
         /**
          * The transformation plan.

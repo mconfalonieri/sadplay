@@ -81,7 +81,7 @@ bool sdl_display_driver::initialize(int num_channels) {
 }
 
 // Normalizes colors.
-void sdl_display_driver::normalize_color(rgb &color, int r, int g, int b) {
+inline void sdl_display_driver::normalize_color(rgb &color, int r, int g, int b) {
     if (r > 255) r = 255;
     if (g > 255) g = 255;
     if (b > 255) b = 255;
