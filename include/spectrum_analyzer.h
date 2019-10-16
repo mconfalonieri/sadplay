@@ -22,7 +22,11 @@
 #ifndef _SADPLAY_ANALYZER_H_
 #define _SADPLAY_ANALYZER_H_
 
+#include <vector>
+
 #include <fftw3.h>
+
+#include "frequency_bar.h"
 
 /**
  * Spectrum analyzer class. This class analyzes the spectrum of the data
@@ -37,22 +41,26 @@ class spectrum_analyzer {
         const static int SAMPLING_RATE = 44100;
 
         /**
-         * Number of channels.
+         * Input buffer size.
          */
-        const static int CHANNELS = 2;
+        const static int IN_BUFFER_SIZE = 4096;
 
         /**
-         * Bytes per sample.
+         * Raw input buffer size (stereo).
          */
-        const static int BYTES_PER_SAMPLE = 2;
+        const static int IN_RAW_BUFFER_SIZE = IN_BUFFER_SIZE * 2;
 
         /**
-         * Constructor. It builds a new spectrum analyzer with a sample
-         * duration.
+         * Output buffer size.
+         */
+        const static int OUT_BUFFER_SIZE = IN_BUFFER_SIZE / 2 + 1;
+
+        /**
+         * Constructor.
          * 
-         * @param   duration        the duration in milliseconds
+         * @param   bar             frequency bar
          */
-        spectrum_analyzer(int duration);
+        spectrum_analyzer(frequency_bar* bar);
 
         /**
          * Destructor.
@@ -60,51 +68,30 @@ class spectrum_analyzer {
         ~spectrum_analyzer();
 
         /**
-         * Acquires a new sample.
+         * Acquires a new sample buffer and performs the FFT. If the
+         * available data is less than the full buffer, it will be
+         * zero-padded.
          * 
+         * @param   n               number of samples
          * @param   raw_buffer      the raw sample buffer
          */
-        void acquire(short* raw_buffer);
+        void perform(int n, const short* raw_buffer);
 
     protected:
         /**
-         * Buffer size for one second.
-         */
-        const static int RAW_BUFFER_SIZE_1S = SAMPLING_RATE * CHANNELS * BYTES_PER_SAMPLE;
-
-        /**
-         * Index of the real component of a FFTW complex number.
-         */
-        const static int FFTW_REAL = 0;
-
-        /**
-         * Index of the imaginary component of a FFTW complex number.
-         */
-        const static int FFTW_IMAG = 1;
-
-    private:
-        /**
-         * Calculates the raw buffer size based on duration.
+         * Acquires the input array.
          * 
-         * @param   duration        duration in milliseconds
-         * 
-         * @return  the raw buffer size (before interpolation)
+         * @param   n               number of samples
+         * @param   raw_buffer      the raw sample buffer
          */
-        inline int get_in_raw_buffer_size(int duration) {
-            return RAW_BUFFER_SIZE_1S * duration / 1000;
+        void acquire(int n, const short* raw_buffer);
+
+        /**
+         * Acquires data from the buffer if present, or pad with zero.
+         */
+        inline short acquire_sample(int bytes, int pos, const short* buffer) {
+            return (pos < bytes)? interpolate_stereo(buffer + pos) : 0;
         }
-
-        /**
-         * Calculates the input mono buffer size.
-         */
-        inline int get_in_buffer_size() { return in_raw_buffer_size / 2; }
-
-        /**
-         * Calculates the output buffer size.
-         * 
-         * @return the output buffer size
-         */
-        inline int get_out_buffer_size() { return in_buffer_size / 2 + 1; }
 
         /**
          * Interpolates two channels into one.
@@ -113,27 +100,30 @@ class spectrum_analyzer {
          * 
          * @return  the interpolated value
          */
-        inline short interpolate_stereo(short in[2]) { return (in[0] + in[1]) / 2; }
+        inline short interpolate_stereo(const short in[2]) {
+            return (in[0] + in[1]) / 2;
+        }
 
         /**
-         * The raw buffer size.
+         * Hann window function.
+         * 
+         * @param   i               the position in the input buffer
+         * @param   n               the number of samples
+         * 
+         * @return  the multiplier for the i-th position
          */
-        int in_raw_buffer_size;
+        double hann(int i, int n);
 
         /**
-         * The input buffer size.
-         */ 
-        int in_buffer_size;
-
-        /**
+         * Prepares the Hann multipliers.
+         */
+        void prepare_hann_multipliers();
+        
+    private:
+       /**
          * The input buffer.
          */
         double* in_buffer;
-
-        /**
-         * The output buffer size.
-         */
-        int out_buffer_size;
 
         /**
          * The output buffer.
@@ -144,6 +134,16 @@ class spectrum_analyzer {
          * The transformation plan.
          */
         fftw_plan plan;
+
+        /**
+         * Frequency bar.
+         */
+        frequency_bar* fbar;
+
+        /**
+         * Hann coefficients.
+         */
+        double* hann_multipliers;
 };
 
 #endif // _SADPLAY_ANALYZER_H_

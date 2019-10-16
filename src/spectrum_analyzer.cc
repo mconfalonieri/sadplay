@@ -21,87 +21,62 @@
 
 #include "spectrum_analyzer.h"
 
-// Constructor. It does all the calculations required to size the buffers and
-// allocate the FFT plan.
-spectrum_analyzer::spectrum_analyzer(int duration): plan(NULL) {
-    in_raw_buffer_size = get_in_raw_buffer_size(duration);
-    in_buffer_size = get_in_buffer_size();
-    out_buffer_size = get_out_buffer_size();
+#include <cmath>
+
+// Constructor. It allocates the FFT plan.
+spectrum_analyzer::spectrum_analyzer(frequency_bar* fbar) :
+        plan(NULL), fbar(fbar) {
 
     // Allocate the in and out buffers.
-    in_buffer = fftw_alloc_real(in_buffer_size);
-    out_buffer = fftw_alloc_complex(out_buffer_size);
+    in_buffer = fftw_alloc_real(IN_BUFFER_SIZE);
+    out_buffer = fftw_alloc_complex(OUT_BUFFER_SIZE);
 
-    plan = fftw_plan_dft_r2c_1d(in_buffer_size, in_buffer, out_buffer, )
+    // Prepares the plan and the pre-calculated hann values
+    plan = fftw_plan_dft_r2c_1d(IN_BUFFER_SIZE, in_buffer, out_buffer,
+            FFTW_ESTIMATE);
+
+    hann_multipliers = new double[IN_BUFFER_SIZE];
+    prepare_hann_multipliers();
 }
 
-        /**
-         * Destructor.
-         */
-        spectrum_analyzer::~spectrum_analyzer();
+// Destructor.
+spectrum_analyzer::~spectrum_analyzer() {
+    delete[] hann_multipliers;
+    fftw_destroy_plan(plan);
+    fftw_free(out_buffer);
+    fftw_free(in_buffer);
+}
 
-        /**
-         * Acquires a new sample.
-         * 
-         * @param   raw_buffer      the raw sample buffer
-         */
-        void spectrum_analyzer::acquire(short* raw_buffer);
+// Acquires a sample and performs the FFT.
+void spectrum_analyzer::perform(int n, const short* raw_buffer) {
+    acquire(n, raw_buffer);
+    fftw_execute(plan);
+}
 
-    protected:
-        /**
-         * Buffer size for one second.
-         */
-        const static int RAW_BUFFER_SIZE_1S = SAMPLING_RATE * CHANNELS * BYTES_PER_SAMPLE;
+// Acquires the raw buffer.
+void spectrum_analyzer::acquire(int n, const short* raw_buffer) {
+   int bytes = n * 2;
+    for (
+            int in_pos = 0, raw_pos = 0;
+            raw_pos < bytes;
+            in_pos++, raw_pos += 2
+    ) {
+        double h = hann_multipliers[in_pos];
 
-    private:
-        /**
-         * Calculates the raw buffer size based on duration.
-         * 
-         * @param   duration        duration in milliseconds
-         * 
-         * @return  the raw buffer size (before interpolation)
-         */
-        inline int get_in_raw_buffer_size(int duration) {
-            return RAW_BUFFER_SIZE_1S * duration / 1000;
-        }
+        // Prepare the sample using the window function.
+        in_buffer[in_pos] = h * acquire_sample(bytes, raw_pos, raw_buffer);
+    } 
+}
 
-        /**
-         * Calculates the input mono buffer size.
-         */
-        inline int get_in_buffer_size() { return in_raw_buffer_size / 2; }
+// Hann window function.
+double spectrum_analyzer::hann(int i, int n) {
+    double sqrt_hann = sin(M_PI * (double) i / (double) n);
+    return sqrt_hann * sqrt_hann;
+}
 
-        /**
-         * Calculates the output buffer size.
-         * 
-         * @return the output buffer size
-         */
-        inline int get_out_buffer_size() { return in_buffer_size / 2 + 1; }
-
-        /**
-         * Interpolates two channels into one.
-         * 
-         * @param   in              the input array
-         * 
-         * @return  the interpolated value
-         */
-        inline short interpolate_stereo(short in[2]) { return (in[0] + in[1]) / 2; }
-
-        int in_raw_buffer_size;
-        /**
-         * The input buffer size.
-         */ 
-        int in_buffer_size;
-
-        /**
-         * The output buffer size.
-         */
-        int out_buffer_size;
-
-
-        /**
-         * The transformation plan.
-         */
-        fftw_plan plan;
-};
-
-#endif // _SADPLAY_ANALYZER_H_
+// Prepares the array with the Hann multipliers.
+void spectrum_analyzer::prepare_hann_multipliers() {
+    for (int i = 0; i < IN_BUFFER_SIZE; i++) {
+        hann_multipliers[i] = hann(i, IN_BUFFER_SIZE);
+    }
+}

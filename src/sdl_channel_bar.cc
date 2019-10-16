@@ -38,7 +38,12 @@ void sdl_channel_bar::update(int channel, int value) {
     if (status != 0) {
         return;
     }
-    this->channels[channel] = value;
+    int& ch = this->channels[channel];
+    int new_value = (value > 100)? 100 : 
+                ((value < 0)? 0 : value);
+    if (new_value > ch) {
+        ch = new_value;
+    }
     SDL_UnlockMutex(this->mutex);
 }
 
@@ -49,17 +54,26 @@ void sdl_channel_bar::update_all(const int values[]) {
         return;
     }
     for (int c = 0; c < this->channels.size(); c++) {
-        int new_value = (values[c] > 100)? 100 : values[c];
-        this->channels[c] = new_value;
+        int& ch = this->channels[c];
+        int new_value = (values[c] > 100)? 100 : 
+                ((values[c] < 0)? 0 : values[c]);
+        if (new_value > ch) {
+            ch = new_value;
+        }
     }
     SDL_UnlockMutex(this->mutex);
 }
 
 // Reset all channels
 void sdl_channel_bar::reset_channels() {
-    int* zeroes = new int[this->channels.size()]();
-    this->update_all(zeroes);
-    delete[] zeroes;
+   int status = SDL_LockMutex(this->mutex);
+    if (status != 0) {
+        return;
+    }
+    for (int c = 0; c < this->channels.size(); c++) {
+        this->channels[c] = 0;
+    }
+    SDL_UnlockMutex(this->mutex);
 }
 
 // Executes the operations associated with the timer.

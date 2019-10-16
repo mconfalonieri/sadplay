@@ -29,6 +29,11 @@
 class channel_bar {
     public:
         /**
+         * Destructor.
+         */
+        virtual ~channel_bar() {}
+
+        /**
          * Updates a channel.
          * 
          * @param   channel     the channel that needs to be updated

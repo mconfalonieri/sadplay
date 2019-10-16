@@ -21,6 +21,7 @@ dnl
 
 AC_INIT([sadplay], [1.0])
 AM_INIT_AUTOMAKE([foreign parallel-tests color-tests])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CXX
 
@@ -33,8 +34,10 @@ AM_PATH_SDL2($SDL_VERSION,
         AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
-AC_SUBST(CXXFLAGS, "$CXXFLAGS $SDL_CFLAGS -I./include")
-AC_SUBST(LIBS, "$LIBS $SDL_LIBS")
+AX_FFTW3()
+
+AC_SUBST(CXXFLAGS, "$CXXFLAGS $SDL_CFLAGS $FFTW3_CFLAGS -I./include")
+AC_SUBST(LIBS, "$LIBS $SDL_LIBS $FFTW3_LIBS")
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

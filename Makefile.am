@@ -24,8 +24,12 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 # Main sources
 bin_PROGRAMS = sadplay
-sadplay_SOURCES = src/main.cc src/main_support.cc src/sadplay.cc \
-	src/sdl_channel_bar.cc src/sdl_driver.cpp
+sadplay_SOURCES = src/frequency_bar.cc src/main.cc src/main_support.cc \
+	src/sadplay.cc src/sdl_channel_bar.cc src/sdl_driver.cc \
+	src/spectrum_analyzer.cc \
+	include/channel_bar.h include/display.h include/frequency_bar.h \
+	include/main_support.h include/sadplay.h include/sdl_channel_bar.h \
+	include/sdl_driver.h include/spectrum_analyzer.h
 
 # Test cases
 TESTS = $(check_PROGRAMS)
@@ -35,11 +39,14 @@ check_PROGRAMS = test_main_support test_sdl_channel_bar
 
 test_main_support_LIBS = $(CODE_COVERAGE_LIBS)
 test_main_support_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
-test_main_support_SOURCES = test/test_runner.cc test/test_main_support.cc src/main_support.cc
+test_main_support_SOURCES = test/test_runner.cc test/test_main_support.cc \
+	src/main_support.cc include/main_support.h
 
 test_sdl_channel_bar_LIBS = $(CODE_COVERAGE_LIBS)
 test_sdl_channel_bar_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
-test_sdl_channel_bar_SOURCES = test/test_runner.cc test/test_sdl_channel_bar.cc src/sdl_channel_bar.cc
+test_sdl_channel_bar_SOURCES = test/test_runner.cc \
+	test/test_sdl_channel_bar.cc src/sdl_channel_bar.cc \
+	include/sdl_channel_bar.h
 
 # Other resources
 README: README.md
