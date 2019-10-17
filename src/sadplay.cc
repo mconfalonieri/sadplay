@@ -24,6 +24,7 @@
 
 #include "sdl_driver.h"
 #include "frequency_bar.h"
+#include "texts.h"
 
 using std::string;
 using std::map;
@@ -48,6 +49,11 @@ sadplay::~sadplay() {
 int sadplay::run(sadplay_args* args) {
     const int NUM_CHANNELS = frequency_bar::CHANNEL_BARS;
 
+    if (args->error) {
+        show_text(texts::CMDLINE_HELP_TEXT);
+        return 1;
+    }
+
     // Sets the verbose flag.
     this->verbose = args->verbose;
 
@@ -62,6 +68,7 @@ int sadplay::run(sadplay_args* args) {
     
     log("Exiting.");
     delete player;
+    
     return 0;
 }
 
@@ -102,6 +109,10 @@ void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
                     paused = !paused;
                     cmd = CMD_NONE;
                     break;
+                case CMD_INFO:
+                    string msg = "Playing: " + (*ptr) + "\n";
+                    show_text(msg.c_str());
+                    cmd = CMD_NONE;
             }
         }
         log("Stopping the music.");
@@ -115,28 +126,27 @@ void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
 int sadplay::handle_events(adplug_player* player) {
     int cmd = CMD_NONE;
     bool valid_cmd = false;
-    while (!cmd) {
-        SDL_Event e;
-        SDL_PollEvent(&e);
-        switch (e.type) {
-            case SDL_QUIT:
-                cmd = CMD_QUIT;
-                break;
-            case SDL_KEYUP:
+    SDL_Event e;
+    SDL_PollEvent(&e);
+    switch (e.type) {
+        case SDL_QUIT:
+            cmd = CMD_QUIT;
+            break;
+        case SDL_KEYDOWN:
+            if (e.key.repeat == 0)
                 cmd = handle_keyboard_event(e);
-                break;               
-            default:
-                cmd = CMD_NONE;
-        }
-        if (player->is_ended()) {
-            cmd = CMD_NEXT;
-        }
+            break;               
+        default:
+            cmd = CMD_NONE;
     }
+
+    if (player->is_ended()) cmd = CMD_NEXT;
+    
     return cmd;
 }
 
 int sadplay::handle_keyboard_event(SDL_Event& e) {
-    int cmd;
+    int cmd = CMD_NONE;
     switch (e.key.keysym.sym) {
         case SDLK_RIGHT:
         case SDLK_n:
@@ -153,11 +163,26 @@ int sadplay::handle_keyboard_event(SDL_Event& e) {
         case SDLK_SPACE:
             cmd = CMD_PAUSE;
             break;
-        default:
-            cmd = CMD_NONE;
+        case SDLK_h:
+            show_text(texts::HELP_TEXT);
+            break;
+        case SDLK_w:
+            show_text(texts::WARRANTY_TEXT);
+            break;
+        case SDLK_c:
+            show_text(texts::LICENSE_TEXT);
+            break;
+        case SDLK_i:
+            cmd = CMD_INFO;
     }
     return cmd;
 }
+
+// Shows informational text
+void sadplay::show_text(const char* text) {
+    std::cerr << text << std::endl;
+}
+
 // Logger.
 void sadplay::log(string line) {
     // Log to stdout if verbose (-v) flag present.

@@ -41,6 +41,8 @@ adplug_player::adplug_player(const string& filename) : opl(NULL) {
         new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false),
         new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false)
     };
+
+    // Surround, 'cause it matters.
     opl = new CSurroundopl(opls[0], opls[1], true);
     player = CAdPlug::factory(filename, opl);
     ended = (player == NULL);
@@ -51,6 +53,10 @@ adplug_player::~adplug_player() {
     delete opl;
 }
 
+// This routine is taken from AdPlay's SDL driver:
+// https://github.com/adplug/adplay-unix/blob/master/src/sdl.cc
+// Copyright (C) 2001 - 2003 Simon Peter <dn.tlp@gmx.net>
+// This code was released by the author under GPL v2.
 void adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_size) {
     static long minicnt = 0;
     if (sample_size == 0) sample_size = 1;

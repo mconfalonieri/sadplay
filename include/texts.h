@@ -1,8 +1,8 @@
 /*
  * sadplay - AdLib music player with graphics.
  * 
- * audio_output.h - abstract audio output interface.
- * 
+ * texts.h - Header for help messages.
+ *  
  * Copyright (C) 2019 Marco Confalonieri <marco at marcoconfalonieri.it>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,21 +19,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef _SADPLAY_AUDIO_OUTPUT_H
-#define _SADPLAY_AUDIO_OUTPUT_H
+#ifndef _SADPLAY_TEXTS_H_
+#define _SADPLAY_TEXTS_H_
 
 /**
- * Abstract class that defines the routines for the audio playback.
+ * Utility class that contains useful long texts.
  */
-class audio_output {
+class texts {
     public:
-        /**
-         * Destructor.
-         */
-        virtual ~audio_output() {}
+    /**
+    * Help text.
+    */
+    const static char* HELP_TEXT;
 
-        
-        
+    /**
+     * License text.
+     */
+    const static char* LICENSE_TEXT;
+
+    /**
+     * Warranty text.
+     */
+    const static char* WARRANTY_TEXT;
+
+    /**
+     * Help on command line options.
+     */
+    const static char* CMDLINE_HELP_TEXT;
 };
 
-#endif // _SADPLAY_AUDIO_OUTPUT_H
+#endif // _SADPLAY_TEXTS_H_

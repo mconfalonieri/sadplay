@@ -37,9 +37,10 @@
  */
 const std::string SADPLAY_LICENSE =
     "sadplay version " VERSION " - Copyright (C) 2019 Marco Confalonieri\n\n"
-    "This program comes with ABSOLUTELY NO WARRANTY; for details type `W'.\n"
+    "This program comes with ABSOLUTELY NO WARRANTY; for details type [W].\n"
     "This is free software, and you are welcome to redistribute it under\n"
-    "certain conditions; type `C' for details.\n";
+    "certain conditions; type [C] for details.\n"
+    "Press [H] for general help.\n\n";
 
 /**
  * Main function. It prints the license message and starts up the application
@@ -58,12 +59,12 @@ int main(int argc, char* argv[]) {
 
     // Prints the standard license
     std::cout << SADPLAY_LICENSE << std::endl;
-
-    read_command_line(&args, argc, argv);
+    if (argc > 1) read_command_line(&args, argc, argv);
+    else args.error = true;
 
     // The app main class.
     sadplay app;
-    app.run(&args);
+    int retcode = app.run(&args);
 
-    return 0;
+    return retcode;
 }

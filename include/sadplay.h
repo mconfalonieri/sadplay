@@ -36,7 +36,7 @@ struct sadplay_args {
     /**
      * Verbose output.
      */
-    bool verbose;
+    bool verbose = false;
 
     /**
      * Log file.
@@ -51,12 +51,12 @@ struct sadplay_args {
     /**
      * Command line parsing error.
      */
-    bool error;
+    bool error = false;
 
     /**
      * Repeat queue.
      */
-    bool repeat;
+    bool repeat = false;
 };
 
 /**
@@ -120,6 +120,13 @@ class sadplay {
          */
         int handle_keyboard_event(SDL_Event& e);
 
+        /**
+         * Shows the text on screen.
+         * 
+         * @param   text        the text that should be shown.
+         */
+        void show_text(const char* text);
+
     private:
         /**
          * Verbose flag.
@@ -159,6 +166,11 @@ class sadplay {
          * Pause / continue.
          */
         const static int CMD_PAUSE = 3;
+
+        /**
+         * Info command.
+         */
+        const static int CMD_INFO = 4;
 };
 
 #endif // _SADPLAY_SADPLAY_H_
