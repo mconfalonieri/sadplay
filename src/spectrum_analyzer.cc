@@ -51,6 +51,7 @@ spectrum_analyzer::~spectrum_analyzer() {
 void spectrum_analyzer::perform(int n, const short* raw_buffer) {
     acquire(n, raw_buffer);
     fftw_execute(plan);
+    fbar->acquire_fft(SAMPLING_RATE, OUT_BUFFER_SIZE, out_buffer);
 }
 
 // Acquires the raw buffer.

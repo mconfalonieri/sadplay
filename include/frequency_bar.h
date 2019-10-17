@@ -102,7 +102,7 @@ class frequency_bar {
          *          second
          */
         inline double get_frequency(int i, int n, int sample_rate) {
-            return (double) sample_rate * (double) i / (double) n;
+            return (double) sample_rate * (double) i / (double) n / 2;
         }
 
         /**

@@ -64,7 +64,7 @@ void frequency_bar::acquire_fft(int sample_rate, int num_samples, const fftw_com
 // Prepares the channels to be loaded in the channel bar.
 void frequency_bar::prepare_channels(const double* in_buffer, int* out_buffer) {
     for (int i = 0; i < CHANNEL_BARS; i++) {
-        double db_value = 10.0 * log10(in_buffer[i]);
+        double db_value = 10.0 * log10(in_buffer[i]) / 1.4;
         out_buffer[i] = (db_value > 100)? 100 :
                 ((db_value < 0)? 0 : (int) db_value);
     }

@@ -26,7 +26,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 bin_PROGRAMS = sadplay
 sadplay_SOURCES = src/frequency_bar.cc src/main.cc src/main_support.cc \
 	src/sadplay.cc src/sdl_channel_bar.cc src/sdl_driver.cc \
-	src/spectrum_analyzer.cc \
+	src/spectrum_analyzer.cc src/adplug_player.cc \
 	include/channel_bar.h include/display.h include/frequency_bar.h \
 	include/main_support.h include/sadplay.h include/sdl_channel_bar.h \
 	include/sdl_driver.h include/spectrum_analyzer.h

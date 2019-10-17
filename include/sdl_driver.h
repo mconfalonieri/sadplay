@@ -28,6 +28,8 @@
 
 #include "display.h"
 #include "sdl_channel_bar.h"
+#include "adplug_player.h"
+#include "spectrum_analyzer.h"
 
 /**
  * Function that must be called by the SDL timer to update the channel bar.
@@ -62,7 +64,7 @@ class sdl_display_driver : public display {
         /**
          * Time interval.
          */
-        const static Uint32 TIMER_INTERVAL = 10;
+        const static Uint32 TIMER_INTERVAL = 20;
 
         /**
          * Constructor.
@@ -84,6 +86,15 @@ class sdl_display_driver : public display {
         bool initialize(int num_channels);
 
         /**
+         * Plays an audio file.
+         * 
+         * @param   player          the adplug player
+         * 
+         * @return  true if the player was started
+         */
+        bool play(adplug_player* player);
+
+        /**
          * Updates the channel bar.
          */
         void update_channel_bar();
@@ -96,7 +107,6 @@ class sdl_display_driver : public display {
         channel_bar* get_channel_bar();
 
     protected:
-
         /**
          * Internal color type.
          */
@@ -118,6 +128,11 @@ class sdl_display_driver : public display {
         } rgb;
 
         /**
+         * Initializes the colors table.
+         */
+        void prepare_colors_table();
+
+        /**
          * Normalizes colors in the standard range.
          * 
          * @param   color               reference to the color
@@ -133,7 +148,7 @@ class sdl_display_driver : public display {
          * @param   time_elapsed        the time elapsed since the last update
          *                              in milliseconds
          */
-        void update_channel_bar_decay(Uint32 time_elapsed);
+        void update_channel_bar(Uint32 time_elapsed);
 
         /**
          * Draws a bar at the given position.
@@ -157,6 +172,25 @@ class sdl_display_driver : public display {
          */
         void draw_bars();
 
+        /**
+         * Prepare the rectangle.
+         */
+        void prepare_rectangle(SDL_Rect &rect, int x, int y, int w, int h);
+
+        /**
+         * Sets up audio specs.
+         */
+        void setup_audio_spec(SDL_AudioSpec &spec);
+
+        /**
+         * Callback for audio.
+         * 
+         * @param   param           user-defined parameter
+         * @param   audiobuf        audio buffer
+         * @param   len             length of the audio buffer
+         */
+        static void audio_callback(void* param, Uint8* audiobuf, int len);
+
     private:
 
         // Declares the function as friend.
@@ -173,9 +207,14 @@ class sdl_display_driver : public display {
         SDL_mutex* mutex;
 
         /**
-         * Timer ID.
+         * Timer ID for bar update.
          */
         SDL_TimerID timer_id;
+
+        /**
+         * Time rID for the player.
+         */
+        SDL_TimerID timer_player;
 
         /**
          * SDL Window.
@@ -191,6 +230,24 @@ class sdl_display_driver : public display {
          * Internal channel bar.
          */
         sdl_channel_bar* cbar;
+
+        /**
+         * Precalculated colors.
+         */
+        rgb* colors_table;
+
+        /**
+         * RGB black color.
+         */
+        const static rgb BLACK;
+
+        SDL_AudioSpec spec;
+
+        frequency_bar* freq_bar;
+
+        spectrum_analyzer* analyzer;
+
+        adplug_player* player;
 };
 
 #endif // _SADPLAY_SDL_DRIVER_H_

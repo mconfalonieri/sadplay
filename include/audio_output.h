@@ -31,6 +31,8 @@ class audio_output {
          * Destructor.
          */
         virtual ~audio_output() {}
+
+        
         
 };
 

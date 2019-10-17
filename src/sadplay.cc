@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "sdl_driver.h"
+#include "frequency_bar.h"
 
 using std::string;
 using std::map;
@@ -45,27 +46,29 @@ sadplay::~sadplay() {
 
 // Application runner.
 int sadplay::run(sadplay_args* args) {
-    const int NUM_CHANNELS = 20;
+    const int NUM_CHANNELS = frequency_bar::CHANNEL_BARS;
     // Sets the verbose flag.
     this->verbose = args->verbose;
     log("Initialize window");
     driver->initialize(NUM_CHANNELS);
     channel_bar* bar = driver->get_channel_bar();
-    log("Preparing channel bar");
-    for (int c = 0; c < NUM_CHANNELS; c++) {
-        bar->update(c, 100);
-    }
-    log("Updating channel bar");
-    driver->update_channel_bar();
-    int quit = 0;
-    SDL_Event e;
-    log("Wait for command");
-    while (!quit) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = -1;
+    log("Preparing player");
+    for (std::list<string>::const_iterator ptr = args->file_list.cbegin(); ptr != args->file_list.cend(); ptr++) {
+        adplug_player player(*ptr);
+        driver->play(&player);
+        int quit = 0, next = 0;
+        SDL_Event e;
+        log("Wait for command");
+        while (!quit && !player.is_ended() && !next) {
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) {
+                    quit = -1;
+                } else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_n) {
+                    next = 1;
+                }
             }
         }
+        if (quit) break;
     }
     return 0;
 }

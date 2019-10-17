@@ -115,7 +115,7 @@ class sdl_channel_bar : public channel_bar {
         /**
          * Milliseconds that the bar will last from 100% to 0.
          */
-        static const int DECAY_TIMER = 500;
+        static const int DECAY_TIMER = 2000;
 };
 
 #endif // _SADPLAY_SDL_CHANNEL_BAR_H_

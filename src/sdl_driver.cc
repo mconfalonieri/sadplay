@@ -21,24 +21,35 @@
 
 #include "sdl_driver.h"
 
+#include "spectrum_analyzer.h"
+
 // Implementation of the callback.
 extern "C" Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
     sdl_display_driver* driver = (sdl_display_driver*) param;
-    driver->update_channel_bar_decay(time_elapsed);
+    driver->update_channel_bar(time_elapsed);
     return sdl_display_driver::TIMER_INTERVAL;
 }
 
 // Constructor.
-sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0), cbar(NULL) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
+sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
+        timer_player(0), cbar(NULL), freq_bar(NULL), analyzer(NULL) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(255);
     }
+    colors_table = new rgb[101];
+    prepare_colors_table();
+
     mutex = SDL_CreateMutex();
+
 }
 
 // Destructor.
 sdl_display_driver::~sdl_display_driver() {
+    if (analyzer != NULL) delete analyzer;
+    if (freq_bar != NULL) delete freq_bar;
+    if (cbar != NULL) delete cbar;
+
     if (timer_id != 0) {
         SDL_RemoveTimer(timer_id);
     }
@@ -46,6 +57,8 @@ sdl_display_driver::~sdl_display_driver() {
     if (mutex != NULL) {
         SDL_UnlockMutex(mutex);
     }
+
+    delete[] colors_table;
 
     //Quit SDL subsystems
     SDL_Quit();
@@ -75,9 +88,20 @@ bool sdl_display_driver::initialize(int num_channels) {
     // Create the channel bar.
     cbar = new sdl_channel_bar(num_channels);
 
+    freq_bar = new frequency_bar(cbar);
+
+    analyzer = new spectrum_analyzer(freq_bar);
+
     timer_id = SDL_AddTimer(TIMER_INTERVAL, sdl_channel_bar_callback, this);
 
     return true;
+}
+
+// Prepares the colors table.
+void sdl_display_driver::prepare_colors_table() {
+    for (int i = 0; i <= 100; i++) {
+        calculate_color(colors_table[i], i);
+    }
 }
 
 // Normalizes colors.
@@ -93,23 +117,19 @@ inline void sdl_display_driver::normalize_color(rgb &color, int r, int g, int b)
 
 // Draws a bar.
 void sdl_display_driver::draw_bar(int x, int width, int level) {
-    // Color variable
-    rgb color;
-
     int y_min = BORDER;
     int y_max = SCREEN_HEIGHT - BORDER;
     int y_span = y_max - y_min;
     int y_level = y_span * level / 100;
 
-    int dy;
-    for (dy = y_level; dy > 0; dy--) {
+    for (int dy = y_level; dy > 0; dy--) {
         // LED effect
         if (!(dy % 4)) continue;
 
         int y = y_max - dy;
         int actual_level = (y_span - dy) * 100 / y_span;
 
-        calculate_color(color, actual_level);
+        const rgb &color = colors_table[actual_level];
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
         SDL_RenderDrawLine(renderer, x, y, x + width, y);
     }
@@ -121,7 +141,6 @@ void sdl_display_driver::draw_bars() {
     int num_channels = cbar->get_numchannels();
     int step = H_SPAN / num_channels;
 
-    // Clear winow
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     int* channels = new int[num_channels];
@@ -133,6 +152,21 @@ void sdl_display_driver::draw_bars() {
     delete[] channels;
 }
 
+void sdl_display_driver::prepare_rectangle(SDL_Rect &rect, int x, int y, int w, int h) {
+    rect.x = x;
+    rect.y = y;
+    rect.w = w;
+    rect.h = h;
+}
+
+void sdl_display_driver::setup_audio_spec(SDL_AudioSpec &spec) {
+    spec.freq = spectrum_analyzer::SAMPLING_RATE;
+    spec.format = AUDIO_S16SYS;
+    spec.channels = 2;
+    spec.samples = spectrum_analyzer::IN_BUFFER_SIZE;
+    spec.callback = audio_callback;
+    spec.userdata = this;
+}
 // Calculates the color.
 void sdl_display_driver::calculate_color(rgb &color, int level) {
     int r = (100 - level) * 255 / 50;
@@ -159,7 +193,30 @@ channel_bar* sdl_display_driver::get_channel_bar() {
 }
 
 // Updates the channel bar. It is called by the callback.
-void sdl_display_driver::update_channel_bar_decay(Uint32 time_elapsed) {
-    cbar->time_elapsed(time_elapsed);
+void sdl_display_driver::update_channel_bar(Uint32 time_elapsed) {
     update_channel_bar();
+    cbar->time_elapsed(time_elapsed);
+}
+
+const sdl_display_driver::rgb sdl_display_driver::BLACK = { 0, 0, 0 };
+
+bool sdl_display_driver::play(adplug_player* player) {
+    this->player = player;
+    setup_audio_spec(spec);
+    if (SDL_OpenAudio(&spec, NULL) < 0) {
+        return false;
+    }
+    printf("Setup completed.\n");
+    SDL_PauseAudio(0);
+    return true;
+}
+
+void sdl_display_driver::audio_callback(void* param, Uint8* audiobuf, int len) {
+    sdl_display_driver* self = (sdl_display_driver*) param;
+    unsigned char sample_size = self->spec.channels * (self->spec.format == AUDIO_U8 ? 1 : 2);
+    self->player->fill_buffer((void*) audiobuf, len, sample_size);
+    self->analyzer->perform(len / 4, (const short*) audiobuf);
+    if (self->player->is_ended()) {
+        SDL_CloseAudio();
+    }
 }

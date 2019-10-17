@@ -27,7 +27,7 @@
 #include <map>
 #include <string>
 
-#include "display.h"
+#include "sdl_driver.h"
 
 /**
  * Command line arguments unrolled.
@@ -107,7 +107,7 @@ class sadplay {
         /**
          * Display driver.
          */
-        display* driver;
+        sdl_display_driver* driver;
 };
 
 #endif // _SADPLAY_SADPLAY_H_
