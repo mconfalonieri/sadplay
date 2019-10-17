@@ -80,10 +80,12 @@ void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
     int cmd = CMD_NEXT;
 
     while (ptr != END && cmd != CMD_QUIT) {
-        log("Playing file: " + *ptr);
+        string msg = "Playing: " + (*ptr) + "\n";
+        show_text(msg.c_str());
+
         cmd = CMD_NONE;
         delete player;
-        player = new adplug_player(*ptr);
+        player = new adplug_player(*ptr, args->continuous);
         if (!driver->play(player)) continue;
         bool paused = false;
         while (!cmd) {

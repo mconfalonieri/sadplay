@@ -61,4 +61,5 @@ const char* texts::CMDLINE_HELP_TEXT =
     "    -l     <logfile>               Output messages to <logfile>\n"
     "    -f     <list_file>             Get the file list from <list_file>\n"
     "    -r                             Repeat the file list\n"
+    "    -c                             Continuous play of each song\n"
     "           <file1> [<file2>] [...] Files to be played. With -f they are ignored\n\n";

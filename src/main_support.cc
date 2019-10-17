@@ -66,7 +66,7 @@ void read_command_line(sadplay_args* args, int argc, char* argv[]) {
     int c;
     string file;
     bool file_list_used = false;
-    while ((c = getopt(argc, argv, "vl:f:r")) != -1) {
+    while ((c = getopt(argc, argv, "cvl:f:r")) != -1) {
         switch (c) {
             case 'v':
                 args->verbose = true;
@@ -80,6 +80,9 @@ void read_command_line(sadplay_args* args, int argc, char* argv[]) {
                 break;
             case 'r':
                 args->repeat = true;
+                break;
+            case 'c':
+                args->continuous = true;
                 break;
             case '?':
                 args->error = true;

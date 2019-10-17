@@ -36,7 +36,8 @@ using std::string;
 #endif
 
 // Constructor. It initializes the audio data.
-adplug_player::adplug_player(const string& filename) : opl(NULL) {
+adplug_player::adplug_player(const string& filename, bool continuous) :
+        opl(NULL), continuous(continuous) {
     Copl* opls[2] = {
         new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false),
         new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false)
@@ -70,7 +71,12 @@ void adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_si
     while (towrite > 0) {
         while (minicnt < 0) {
             minicnt += spectrum_analyzer::SAMPLING_RATE;
-            ended = !player->update();
+            bool end_reached = !player->update();
+            if (end_reached && continuous) {
+                player->rewind();
+            } else if (end_reached) {
+                ended = true;
+            }
         }
         float refresh = player->getrefresh();
         i = min(towrite, (long)(minicnt / ((refresh == 0)? 1 : refresh) + 4) & ~3);

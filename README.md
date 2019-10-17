@@ -19,13 +19,14 @@ sadplay [-v] [-l <logfile>] [-f <list_file>] [-r] <file1> [<file2>] [...]
 
 Follows a description of the arguments:
 
-| Switch | Argument      | Description                                    |
-| ------ | ------------- | ---------------------------------------------- |
-| `-v`   |               | Turn on verbose messages                       |
-| `-l`   | `<logfile>`   | Output messages to `<logfile>`                 |
-| `-f`   | `<list_file>` | Get the file list from `<list_file>`           |
-| `-r`   |               | Repeat the file list                           |
-|        | `<file1>`     | Files to be played. With `-f` they are ignored |
+| Switch | Argument      | Description                                      |
+| ------ | ------------- | ------------------------------------------------ |
+| `-v`   |               | Turn on verbose messages                         |
+| `-l`   | `<logfile>`   | Output messages to `<logfile>`                   |
+| `-f`   | `<list_file>` | Get the file list from `<list_file>`             |
+| `-r`   |               | Repeat the file list                             |
+| `-c`   |               | Continuous play of each song (until interruptes) |
+|        | `<file1>`     | Files to be played. With `-f` they are ignored   |
 
 ## Commands during execution
 The following keys can be used to control sadplay during the execution.

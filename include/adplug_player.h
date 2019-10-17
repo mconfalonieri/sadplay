@@ -33,8 +33,11 @@ class adplug_player {
     public:
         /**
          * Constructor.
+         * 
+         * @param   filename        AdLib music file to play
+         * @param   continuous      true to rewind the song
          */
-        adplug_player(const std::string& filename);
+        adplug_player(const std::string& filename, bool continuous);
 
         /**
          * Destructor.
@@ -74,6 +77,11 @@ class adplug_player {
          * Defines if the playback has ended.
          */
         bool ended;
+
+        /**
+         * Continuous play flag.
+         */
+        bool continuous;
 };
 
 #endif // _SADPLAY_ADPLUG_PLAYER_H_

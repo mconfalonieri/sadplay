@@ -57,6 +57,11 @@ struct sadplay_args {
      * Repeat queue.
      */
     bool repeat = false;
+
+    /**
+     * Plays one song continuosly.
+     */
+    bool continuous = false;
 };
 
 /**
@@ -140,6 +145,7 @@ class sadplay {
 
         /**
          * Display driver.
+
          */
         sdl_display_driver* driver;
 
