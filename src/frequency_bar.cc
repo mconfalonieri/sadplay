@@ -47,11 +47,12 @@ frequency_bar::~frequency_bar() {
 void frequency_bar::acquire_fft(int sample_rate, int num_samples, const fftw_complex* result) {
     double energies[CHANNEL_BARS] = { 0 };
     int channels[CHANNEL_BARS] = { 0 };
+    const int LAST_CHANNEL = CHANNEL_BARS - 1;
 
     int channel = 0;
     for (int i = 0; i < num_samples; i++) {
         double freq = get_frequency(i, num_samples, sample_rate);
-        if (freq > CHANNEL_LIMITS[channel]) {
+        if (freq > CHANNEL_LIMITS[channel] && channel < LAST_CHANNEL) {
             channel++;
         }
         energies[channel] += squared_magnitude(result[i]);

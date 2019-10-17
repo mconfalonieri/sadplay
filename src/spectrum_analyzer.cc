@@ -56,21 +56,22 @@ void spectrum_analyzer::perform(int n, const short* raw_buffer) {
 
 // Acquires the raw buffer.
 void spectrum_analyzer::acquire(int n, const short* raw_buffer) {
-   int bytes = n * 2;
+   int buffer_len = n * 2;
     for (
             int in_pos = 0, raw_pos = 0;
-            raw_pos < bytes;
+            raw_pos < buffer_len;
             in_pos++, raw_pos += 2
     ) {
         double h = hann_multipliers[in_pos];
 
         // Prepare the sample using the window function.
-        in_buffer[in_pos] = h * acquire_sample(bytes, raw_pos, raw_buffer);
+        in_buffer[in_pos] = h * acquire_sample(buffer_len, raw_pos, raw_buffer);
     } 
 }
 
 // Hann window function.
 double spectrum_analyzer::hann(int i, int n) {
+    if (n == 0) n = 1;
     double sqrt_hann = sin(M_PI * (double) i / (double) n);
     return sqrt_hann * sqrt_hann;
 }

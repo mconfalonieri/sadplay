@@ -52,6 +52,11 @@ struct sadplay_args {
      * Command line parsing error.
      */
     bool error;
+
+    /**
+     * Repeat queue.
+     */
+    bool repeat;
 };
 
 /**
@@ -85,6 +90,8 @@ class sadplay {
         int run(sadplay_args* args);
 
     protected:
+        void main_cycle(sadplay_args* args, adplug_player* player);
+        
         /**
          * Prints a log line. It prints a line in the log, and eventually on
          * the screen, taking into account the verbose flag.
@@ -92,6 +99,26 @@ class sadplay {
          * @param   line        line to be printed.
          */
         void log(std::string line);
+
+        /**
+         * Handles the SDL events. It also determines if the song has ended,
+         * pushing a CMD_NEXT in case.
+         * 
+         * @param   player      the player
+         * 
+         * @return  command issued.
+         */
+        int handle_events(adplug_player* player);
+
+        /**
+         * Handles the keyboard events. If an unsupported key is pressed, it
+         * returns CMD_NONE.
+         * 
+         * @param   e           event that should be decoded.
+         *
+         * @return  the corresponding command.
+         */
+        int handle_keyboard_event(SDL_Event& e);
 
     private:
         /**
@@ -108,6 +135,30 @@ class sadplay {
          * Display driver.
          */
         sdl_display_driver* driver;
+
+        /**
+         * Quit command.
+         */
+        const static int CMD_QUIT = -1;
+
+        /**
+         * No command.
+         */
+        const static int CMD_NONE = 0;
+        /**
+         * Next song command.
+         */
+        const static int CMD_NEXT = 1;
+
+        /**
+         * Previous song command.
+         */
+        const static int CMD_PREV = 2;
+
+        /**
+         * Pause / continue.
+         */
+        const static int CMD_PAUSE = 3;
 };
 
 #endif // _SADPLAY_SADPLAY_H_

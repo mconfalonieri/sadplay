@@ -47,32 +47,117 @@ sadplay::~sadplay() {
 // Application runner.
 int sadplay::run(sadplay_args* args) {
     const int NUM_CHANNELS = frequency_bar::CHANNEL_BARS;
+
     // Sets the verbose flag.
     this->verbose = args->verbose;
+
     log("Initialize window");
     driver->initialize(NUM_CHANNELS);
-    channel_bar* bar = driver->get_channel_bar();
+
     log("Preparing player");
-    for (std::list<string>::const_iterator ptr = args->file_list.cbegin(); ptr != args->file_list.cend(); ptr++) {
-        adplug_player player(*ptr);
-        driver->play(&player);
-        int quit = 0, next = 0;
-        SDL_Event e;
-        log("Wait for command");
-        while (!quit && !player.is_ended() && !next) {
-            while (SDL_PollEvent(&e)) {
-                if (e.type == SDL_QUIT) {
-                    quit = -1;
-                } else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_n) {
-                    next = 1;
-                }
-            }
-        }
-        if (quit) break;
-    }
+    adplug_player* player = NULL;
+ 
+    log("Entering main cycle");
+    main_cycle(args, player);
+    
+    log("Exiting.");
+    delete player;
     return 0;
 }
 
+void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
+    const std::list<string>::const_iterator BEGIN = args->file_list.cbegin();
+    const std::list<string>::const_iterator END = args->file_list.cend();
+
+    std::list<string>::const_iterator ptr = BEGIN;
+    int cmd = CMD_NEXT;
+
+    while (ptr != END && cmd != CMD_QUIT) {
+        log("Playing file: " + *ptr);
+        cmd = CMD_NONE;
+        delete player;
+        player = new adplug_player(*ptr);
+        if (!driver->play(player)) continue;
+        bool paused = false;
+        while (!cmd) {
+            cmd = handle_events(player);
+            switch (cmd) {
+                case CMD_PREV:
+                    log("Issued command CMD_PREV");
+                    if (args->repeat && ptr == BEGIN) ptr = END;
+                    if (ptr != BEGIN) --ptr;
+                    break;
+                case CMD_NEXT:
+                    log("Issued command CMD_NEXT");
+                    if (ptr != END) ++ptr;
+                    break;
+                case CMD_QUIT:
+                    log("Issued command CMD_QUIT");
+                    ptr = END;
+                    break;
+                case CMD_PAUSE:
+                    log("Issued command CMD_PAUSE");
+                    if (paused) driver->cont();
+                    else driver->pause();
+                    paused = !paused;
+                    cmd = CMD_NONE;
+                    break;
+            }
+        }
+        log("Stopping the music.");
+        driver->stop();
+
+        if (args->repeat && ptr == END) {
+            ptr = BEGIN;
+        }
+    }
+}
+int sadplay::handle_events(adplug_player* player) {
+    int cmd = CMD_NONE;
+    bool valid_cmd = false;
+    while (!cmd) {
+        SDL_Event e;
+        SDL_PollEvent(&e);
+        switch (e.type) {
+            case SDL_QUIT:
+                cmd = CMD_QUIT;
+                break;
+            case SDL_KEYUP:
+                cmd = handle_keyboard_event(e);
+                break;               
+            default:
+                cmd = CMD_NONE;
+        }
+        if (player->is_ended()) {
+            cmd = CMD_NEXT;
+        }
+    }
+    return cmd;
+}
+
+int sadplay::handle_keyboard_event(SDL_Event& e) {
+    int cmd;
+    switch (e.key.keysym.sym) {
+        case SDLK_RIGHT:
+        case SDLK_n:
+        case SDLK_DOWN:
+            cmd = CMD_NEXT;
+            break;
+        case SDLK_LEFT:
+        case SDLK_UP:
+            cmd = CMD_PREV;
+            break;
+        case SDLK_q:
+            cmd = CMD_QUIT;
+            break;
+        case SDLK_SPACE:
+            cmd = CMD_PAUSE;
+            break;
+        default:
+            cmd = CMD_NONE;
+    }
+    return cmd;
+}
 // Logger.
 void sadplay::log(string line) {
     // Log to stdout if verbose (-v) flag present.

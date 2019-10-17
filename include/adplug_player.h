@@ -25,7 +25,6 @@
 #include <string>
 
 #include <adplug/adplug.h>
-#include <adplug/emuopl.h>
 
 /**
  * AdPlug player.
@@ -51,7 +50,7 @@ class adplug_player {
          * 
          * @return  milliseconds to next call
          */
-        int fill_buffer(void* audiobuf, int len, unsigned char sample_size);
+        void fill_buffer(void* audiobuf, int len, unsigned char sample_size);
 
         bool is_ended() { return ended; }
 
@@ -59,7 +58,7 @@ class adplug_player {
         /**
          * OPL chip or emulator.
          */
-        CEmuopl opl;
+        Copl* opl;
 
         /**
          * Player.

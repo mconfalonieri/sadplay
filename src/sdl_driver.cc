@@ -32,7 +32,8 @@ extern "C" Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
 
 // Constructor.
 sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
-        timer_player(0), cbar(NULL), freq_bar(NULL), analyzer(NULL) {
+        timer_player(0), cbar(NULL), freq_bar(NULL), analyzer(NULL),
+        audio_dev_id(0) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(255);
@@ -46,6 +47,8 @@ sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
 
 // Destructor.
 sdl_display_driver::~sdl_display_driver() {
+    stop();
+
     if (analyzer != NULL) delete analyzer;
     if (freq_bar != NULL) delete freq_bar;
     if (cbar != NULL) delete cbar;
@@ -54,9 +57,7 @@ sdl_display_driver::~sdl_display_driver() {
         SDL_RemoveTimer(timer_id);
     }
 
-    if (mutex != NULL) {
-        SDL_UnlockMutex(mutex);
-    }
+    SDL_DestroyMutex(mutex);
 
     delete[] colors_table;
 
@@ -121,14 +122,12 @@ void sdl_display_driver::draw_bar(int x, int width, int level) {
     int y_max = SCREEN_HEIGHT - BORDER;
     int y_span = y_max - y_min;
     int y_level = y_span * level / 100;
-
     for (int dy = y_level; dy > 0; dy--) {
         // LED effect
         if (!(dy % 4)) continue;
 
         int y = y_max - dy;
         int actual_level = (y_span - dy) * 100 / y_span;
-
         const rgb &color = colors_table[actual_level];
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
         SDL_RenderDrawLine(renderer, x, y, x + width, y);
@@ -201,22 +200,46 @@ void sdl_display_driver::update_channel_bar(Uint32 time_elapsed) {
 const sdl_display_driver::rgb sdl_display_driver::BLACK = { 0, 0, 0 };
 
 bool sdl_display_driver::play(adplug_player* player) {
+    stop();
     this->player = player;
     setup_audio_spec(spec);
-    if (SDL_OpenAudio(&spec, NULL) < 0) {
-        return false;
-    }
-    printf("Setup completed.\n");
-    SDL_PauseAudio(0);
+
+    audio_dev_id = SDL_OpenAudioDevice(NULL, 0, &spec, NULL, 0);
+    if (audio_dev_id < 0) return false;
+
+    SDL_PauseAudioDevice(audio_dev_id, 0);
     return true;
 }
 
+void sdl_display_driver::pause() {
+    SDL_PauseAudioDevice(audio_dev_id, 1);
+}
+
+void sdl_display_driver::cont() {
+    SDL_PauseAudioDevice(audio_dev_id, 0);
+}
+
+void sdl_display_driver::stop() {
+    if (this->player != NULL) {
+        close_audio_device();
+        this->player = NULL;
+    }
+}
+
 void sdl_display_driver::audio_callback(void* param, Uint8* audiobuf, int len) {
-    sdl_display_driver* self = (sdl_display_driver*) param;
+     sdl_display_driver* self = (sdl_display_driver*) param;
     unsigned char sample_size = self->spec.channels * (self->spec.format == AUDIO_U8 ? 1 : 2);
+
     self->player->fill_buffer((void*) audiobuf, len, sample_size);
-    self->analyzer->perform(len / 4, (const short*) audiobuf);
-    if (self->player->is_ended()) {
-        SDL_CloseAudio();
+    
+    // Number of stereo 16-bit samples.
+    int n = len / 4;
+    self->analyzer->perform(n, (const short*) audiobuf);
+}
+
+void sdl_display_driver::close_audio_device() {
+    if (audio_dev_id > 0) {
+        SDL_CloseAudioDevice(audio_dev_id);
+        audio_dev_id = 0;
     }
 }

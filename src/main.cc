@@ -52,8 +52,7 @@ const std::string SADPLAY_LICENSE =
  *          that there was a problem.
  */
 int main(int argc, char* argv[]) {
-    // The app main class.
-    //sadplay sadplay;
+
     // The app arguments.
     sadplay_args args;
 
@@ -62,6 +61,7 @@ int main(int argc, char* argv[]) {
 
     read_command_line(&args, argc, argv);
 
+    // The app main class.
     sadplay app;
     app.run(&args);
 

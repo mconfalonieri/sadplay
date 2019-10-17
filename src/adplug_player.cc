@@ -21,6 +21,10 @@
 
 #include "adplug_player.h"
 
+#include <iostream>
+
+#include <adplug/surroundopl.h>
+#include <adplug/temuopl.h>
 #include <unistd.h>
 
 #include "spectrum_analyzer.h"
@@ -32,29 +36,39 @@ using std::string;
 #endif
 
 // Constructor. It initializes the audio data.
-adplug_player::adplug_player(const string& filename) : opl(CEmuopl(spectrum_analyzer::SAMPLING_RATE, true, true)) {
-    opl.init();
-    player = CAdPlug::factory(filename, &opl);
+adplug_player::adplug_player(const string& filename) : opl(NULL) {
+    Copl* opls[2] = {
+        new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false),
+        new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false)
+    };
+    opl = new CSurroundopl(opls[0], opls[1], true);
+    player = CAdPlug::factory(filename, opl);
     ended = (player == NULL);
 }
 
-// Destructor
+// Destructor.
 adplug_player::~adplug_player() {
+    delete opl;
 }
 
-int adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_size) {
+void adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_size) {
     static long minicnt = 0;
+    if (sample_size == 0) sample_size = 1;
     long i, towrite = len / sample_size;
     char* pos = (char*) audiobuf;
-
+    for (int j = 0; j < len; j++) {
+        pos[j] = 0;
+    }
+    if (ended) return;
     // Prepare audiobuf with emulator output
     while (towrite > 0) {
         while (minicnt < 0) {
             minicnt += spectrum_analyzer::SAMPLING_RATE;
             ended = !player->update();
         }
-        i = min(towrite, (long)(minicnt / player->getrefresh() + 4) & ~3);
-        opl.update((short *)pos, i);
+        float refresh = player->getrefresh();
+        i = min(towrite, (long)(minicnt / ((refresh == 0)? 1 : refresh) + 4) & ~3);
+        opl->update((short *)pos, i);
         pos += i * sample_size; towrite -= i;
         minicnt -= (long)(player->getrefresh() * i);
     }

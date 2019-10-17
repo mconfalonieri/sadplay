@@ -94,6 +94,12 @@ class sdl_display_driver : public display {
          */
         bool play(adplug_player* player);
 
+        void pause();
+
+        void cont();
+
+        void stop();
+        
         /**
          * Updates the channel bar.
          */
@@ -191,6 +197,8 @@ class sdl_display_driver : public display {
          */
         static void audio_callback(void* param, Uint8* audiobuf, int len);
 
+        void close_audio_device();
+
     private:
 
         // Declares the function as friend.
@@ -248,6 +256,11 @@ class sdl_display_driver : public display {
         spectrum_analyzer* analyzer;
 
         adplug_player* player;
+
+        /**
+         * Audio device ID.
+         */
+        SDL_AudioDeviceID audio_dev_id;
 };
 
 #endif // _SADPLAY_SDL_DRIVER_H_
