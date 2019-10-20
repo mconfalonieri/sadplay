@@ -20,7 +20,9 @@
  */
 #include "sadplay.h"
 
+#include <algorithm>
 #include <cstdlib>
+#include <chrono>
 #include <iostream>
 
 #include "sdl_driver.h"
