@@ -20,6 +20,7 @@
  */
 #include "sadplay.h"
 
+#include <cstdlib>
 #include <iostream>
 
 #include "sdl_driver.h"
@@ -29,12 +30,21 @@
 using std::string;
 using std::map;
 
+// Constructor
+sadplay_args::sadplay_args() : verbose(false), error(false), repeat(false),
+        continuous(false), shuffle(false) {
+            time_t now;
+            time(&now);
+            srand48(now);
+}
+
 // Assigning the constant value
 const string sadplay::DEFAULT_DRIVER_NAME = "sdl";
 
 // Constructor.
 sadplay::sadplay(): verbose(false), log_stream(), driver(NULL) {
     this->driver = new sdl_display_driver();
+    random_seed = std::chrono::system_clock::now().time_since_epoch().count();
 }
 
 // Destructor.
@@ -63,6 +73,8 @@ int sadplay::run(sadplay_args* args) {
     log("Preparing player");
     adplug_player* player = NULL;
  
+    // Shuffles the playlist, if required.
+    if (args->shuffle) shuffle(args->file_list);
     log("Entering main cycle");
     main_cycle(args, player);
     
@@ -73,10 +85,10 @@ int sadplay::run(sadplay_args* args) {
 }
 
 void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
-    const std::list<string>::const_iterator BEGIN = args->file_list.cbegin();
-    const std::list<string>::const_iterator END = args->file_list.cend();
+    const std::vector<string>::const_iterator BEGIN = args->file_list.cbegin();
+    const std::vector<string>::const_iterator END = args->file_list.cend();
 
-    std::list<string>::const_iterator ptr = BEGIN;
+    std::vector<string>::const_iterator ptr = BEGIN;
     int cmd = CMD_NEXT;
 
     while (ptr != END && cmd != CMD_QUIT) {
@@ -183,6 +195,27 @@ int sadplay::handle_keyboard_event(SDL_Event& e) {
 // Shows informational text
 void sadplay::show_text(const char* text) {
     std::cerr << text << std::endl;
+}
+
+// Shuffles the playlist. Using the STL-provided function and convincing
+// the compiler to use it would have created different compilations options to
+// e used on different systems, most notably MacOS X.
+void sadplay::shuffle(std::vector<string> &playlist) {
+    int size = playlist.size();
+    std::vector<string> original_playlist(playlist);
+    std::map<long, int> refs;
+    std::vector<long> positions(size);
+    for (int i = 0; i < size; i++) {
+        long rnd = lrand48();
+        positions[i] = rnd;
+        refs[rnd] = i;
+    }
+    std::sort(positions.begin(), positions.end());
+    for (int i = 0; i < size; i++) {
+        int newpos = refs[positions[i]];
+        playlist[newpos] = original_playlist[i];
+    }
+    return;
 }
 
 // Logger.

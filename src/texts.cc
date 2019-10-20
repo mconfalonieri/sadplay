@@ -62,4 +62,5 @@ const char* texts::CMDLINE_HELP_TEXT =
     "    -f     <list_file>             Get the file list from <list_file>\n"
     "    -r                             Repeat the file list\n"
     "    -c                             Continuous play of each song\n"
+    "    -s                             Shuffle the playlist\n"
     "           <file1> [<file2>] [...] Files to be played. With -f they are ignored\n\n";

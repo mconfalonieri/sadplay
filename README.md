@@ -26,6 +26,7 @@ Follows a description of the arguments:
 | `-f`   | `<list_file>` | Get the file list from `<list_file>`             |
 | `-r`   |               | Repeat the file list                             |
 | `-c`   |               | Continuous play of each song (until interruptes) |
+| `-s`   |               | Shuffles the playlist before playing it          |
 |        | `<file1>`     | Files to be played. With `-f` they are ignored   |
 
 ## Commands during execution

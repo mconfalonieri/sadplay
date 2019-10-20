@@ -34,9 +34,9 @@
  */
 struct sadplay_args {
     /**
-     * Verbose output.
+     * Constructor.
      */
-    bool verbose = false;
+    sadplay_args();
 
     /**
      * Log file.
@@ -46,22 +46,32 @@ struct sadplay_args {
     /**
      * Audio file list.
      */
-    std::list<std::string> file_list;
+    std::vector<std::string> file_list;
 
     /**
+     * Verbose output.
+     */
+    bool verbose;
+
+     /**
      * Command line parsing error.
      */
-    bool error = false;
+    bool error;
 
     /**
      * Repeat queue.
      */
-    bool repeat = false;
+    bool repeat;
 
     /**
      * Plays one song continuosly.
      */
-    bool continuous = false;
+    bool continuous;
+    
+    /**
+     * Shuffle playlist.
+     */
+    bool shuffle;
 };
 
 /**
@@ -132,6 +142,13 @@ class sadplay {
          */
         void show_text(const char* text);
 
+        /**
+         * Shuffle playlist.
+         * 
+         * @param   playlist    reference to the playlist vector
+         */
+        void shuffle(std::vector<std::string> &playlist);
+
     private:
         /**
          * Verbose flag.
@@ -145,9 +162,13 @@ class sadplay {
 
         /**
          * Display driver.
-
          */
         sdl_display_driver* driver;
+
+        /**
+         * The seed for the random engine.
+         */
+        unsigned random_seed;
 
         /**
          * Quit command.

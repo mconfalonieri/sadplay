@@ -53,7 +53,6 @@ const std::string SADPLAY_LICENSE =
  *          that there was a problem.
  */
 int main(int argc, char* argv[]) {
-
     // The app arguments.
     sadplay_args args;
 
