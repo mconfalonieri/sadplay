@@ -25,7 +25,10 @@ steps:
 #  displayName: 'unit tests'
 - script: |
     make
-  displayName: 'build'
+  displayName: 'build binary'
+- script: |
+    make
+  displayName: 'build source distribution'
 - task: GithubRelease@0 
   displayName: 'Create GitHub Release'      
   inputs:
