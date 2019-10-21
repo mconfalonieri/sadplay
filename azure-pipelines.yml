@@ -29,7 +29,7 @@ steps:
 - task: GithubRelease@0 
   displayName: 'Create GitHub Release'      
   inputs:
-    gitHubConnection: mconfalonieri
+    gitHubConnection: mconfalonieri-oauth
     repositoryName: mconfalonieri/sadplay
     tagSource: manual
     tag: $(Build.BuildNumber)      
