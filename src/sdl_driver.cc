@@ -50,11 +50,12 @@ sdl_display_driver::~sdl_display_driver() {
     stop();
     if (timer_id != 0) {
         SDL_RemoveTimer(timer_id);
+        timer_id = 0;
     }
 
-    if (analyzer != NULL) delete analyzer;
-    if (freq_bar != NULL) delete freq_bar;
-    if (cbar != NULL) delete cbar;
+    delete analyzer;
+    delete freq_bar;
+    delete cbar;
 
     SDL_DestroyMutex(mutex);
 

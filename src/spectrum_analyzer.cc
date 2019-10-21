@@ -26,7 +26,10 @@
 // Constructor. It allocates the FFT plan.
 spectrum_analyzer::spectrum_analyzer(frequency_bar* fbar) :
         plan(NULL), fbar(fbar) {
-
+    
+    // Precalculates the Hann coefficients.
+    hann_multipliers = new double[IN_BUFFER_SIZE];
+    prepare_hann_multipliers();
     // Allocate the in and out buffers.
     in_buffer = fftw_alloc_real(IN_BUFFER_SIZE);
     out_buffer = fftw_alloc_complex(OUT_BUFFER_SIZE);
@@ -35,9 +38,8 @@ spectrum_analyzer::spectrum_analyzer(frequency_bar* fbar) :
     plan = fftw_plan_dft_r2c_1d(IN_BUFFER_SIZE, in_buffer, out_buffer,
             FFTW_ESTIMATE);
 
-    hann_multipliers = new double[IN_BUFFER_SIZE];
-    prepare_hann_multipliers();
 }
+ 
 
 // Destructor.
 spectrum_analyzer::~spectrum_analyzer() {

@@ -29,7 +29,8 @@ sadplay_SOURCES = src/frequency_bar.cc src/main.cc src/main_support.cc \
 	src/spectrum_analyzer.cc src/adplug_player.cc src/texts.cc \
 	include/channel_bar.h include/display.h include/frequency_bar.h \
 	include/main_support.h include/sadplay.h include/sdl_channel_bar.h \
-	include/sdl_driver.h include/spectrum_analyzer.h include/texts.h
+	include/sdl_driver.h include/spectrum_analyzer.h include/texts.h \
+	include/adplug_player.h
 
 # Test cases
 TESTS = $(check_PROGRAMS)
@@ -49,7 +50,7 @@ test_sdl_channel_bar_SOURCES = test/test_runner.cc \
 	include/sdl_channel_bar.h
 
 # Other resources
-README: README.md
+README.md: README.md
 
 # lcov report
 if CODE_COVERAGE_ENABLED

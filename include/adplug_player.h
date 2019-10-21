@@ -58,6 +58,13 @@ class adplug_player {
 
         bool is_ended() { return ended; }
 
+        /**
+         * Returns the song title.
+         * 
+         * @return  the song title
+         */
+        std::string get_title();
+
     private:
         /**
          * OPL emulator.
