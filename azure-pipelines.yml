@@ -20,5 +20,5 @@ steps:
     ./configure
   displayName: 'configure'
 - script: |
-    make
-  displayName: 'make'
+    make dist
+  displayName: 'Source distribution'
