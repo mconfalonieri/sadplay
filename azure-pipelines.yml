@@ -20,5 +20,8 @@ steps:
     ./configure
   displayName: 'configure'
 - script: |
-    make dist
-  displayName: 'Source distribution'
+    make check
+  displayName: 'unit tests'
+- script: |
+    make
+  displayName: 'build'
