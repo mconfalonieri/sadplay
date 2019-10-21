@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get install fftw3-dev fftw-mpi libadplug-dev autoconf-archive
+    sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev autoconf-archive
   displayName: 'prerequisites'
 - script: |
     autoreconf --install
