@@ -51,6 +51,7 @@ void read_file_list_from_file(sadplay_args* args, string file, std::istream &inp
     if (file_list != &input) {
         ((ifstream*) file_list)->close();
         delete file_list;
+        file_list = NULL;
     }
 }
 

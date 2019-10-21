@@ -48,14 +48,13 @@ sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
 // Destructor.
 sdl_display_driver::~sdl_display_driver() {
     stop();
+    if (timer_id != 0) {
+        SDL_RemoveTimer(timer_id);
+    }
 
     if (analyzer != NULL) delete analyzer;
     if (freq_bar != NULL) delete freq_bar;
     if (cbar != NULL) delete cbar;
-
-    if (timer_id != 0) {
-        SDL_RemoveTimer(timer_id);
-    }
 
     SDL_DestroyMutex(mutex);
 

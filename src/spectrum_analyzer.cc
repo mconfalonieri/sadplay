@@ -41,10 +41,10 @@ spectrum_analyzer::spectrum_analyzer(frequency_bar* fbar) :
 
 // Destructor.
 spectrum_analyzer::~spectrum_analyzer() {
-    delete[] hann_multipliers;
     fftw_destroy_plan(plan);
     fftw_free(out_buffer);
     fftw_free(in_buffer);
+    delete[] hann_multipliers;
 }
 
 // Acquires a sample and performs the FFT.

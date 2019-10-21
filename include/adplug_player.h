@@ -25,6 +25,7 @@
 #include <string>
 
 #include <adplug/adplug.h>
+#include <adplug/surroundopl.h>
 
 /**
  * AdPlug player.
@@ -59,9 +60,14 @@ class adplug_player {
 
     private:
         /**
-         * OPL chip or emulator.
+         * OPL emulator.
          */
         Copl* opl;
+
+        /**
+         * The OPL emulators for surround.
+         */
+        Copl* opls[2];
 
         /**
          * Player.

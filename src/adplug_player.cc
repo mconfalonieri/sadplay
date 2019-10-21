@@ -23,7 +23,6 @@
 
 #include <iostream>
 
-#include <adplug/surroundopl.h>
 #include <adplug/temuopl.h>
 #include <unistd.h>
 
@@ -38,10 +37,8 @@ using std::string;
 // Constructor. It initializes the audio data.
 adplug_player::adplug_player(const string& filename, bool continuous) :
         opl(NULL), continuous(continuous) {
-    Copl* opls[2] = {
-        new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false),
-        new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false)
-    };
+    opls[0] = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
+    opls[1] = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
 
     // Surround, 'cause it matters.
     opl = new CSurroundopl(opls[0], opls[1], true);
@@ -52,6 +49,7 @@ adplug_player::adplug_player(const string& filename, bool continuous) :
 // Destructor.
 adplug_player::~adplug_player() {
     delete opl;
+
 }
 
 // This routine is taken from AdPlay's SDL driver:

@@ -82,6 +82,7 @@ int sadplay::run(sadplay_args* args) {
     
     log("Exiting.");
     delete player;
+    player = NULL;
     
     return 0;
 }
