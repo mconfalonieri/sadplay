@@ -37,4 +37,4 @@ steps:
     tagSource: manual
     tag: latest      
     assets: |
-         $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber).tar.gz
+         $(Build.SourcesDirectory)/sadplay-$(Build.BuildNumber).tar.gz
