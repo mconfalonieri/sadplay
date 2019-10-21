@@ -29,6 +29,12 @@ steps:
 - script: |
     make
   displayName: 'build source distribution'
+- task: CopyFiles@1
+  inputs:
+    Contents: 'sadplay-$(Build.BuildNumber).tar.gz'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    CleanTargetFolder: true
+    OverWrite: true
 - task: GithubRelease@0 
   displayName: 'Create GitHub Release'      
   inputs:
@@ -38,4 +44,4 @@ steps:
     tagSource: manual
     tag: latest      
     assets: |
-         $(Build.SourcesDirectory)/sadplay-$(Build.BuildNumber).tar.gz
+         $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber).tar.gz
