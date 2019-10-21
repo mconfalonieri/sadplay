@@ -35,6 +35,6 @@ steps:
     gitHubConnection: mconfalonieri-oauth
     repositoryName: mconfalonieri/sadplay
     tagSource: manual
-    tag: $(Build.BuildNumber)      
+    tag: latest      
     assets: |
          $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber).tar.gz
