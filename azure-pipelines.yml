@@ -45,3 +45,4 @@ steps:
     tag: latest      
     assets: |
          $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber).tar.gz
+    assetUploadMode: delete
