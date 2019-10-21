@@ -19,7 +19,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <https://www.gnu.org/licenses/>.
 dnl
 
-AC_INIT([sadplay], [1.0])
+AC_INIT([sadplay], [1.0.0-SNAPSHOT])
 AM_INIT_AUTOMAKE([foreign parallel-tests color-tests])
 AC_CONFIG_MACRO_DIR([m4])
 AC_LANG(C++)
