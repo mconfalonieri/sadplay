@@ -35,14 +35,18 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     CleanTargetFolder: true
     OverWrite: true
-- task: GithubRelease@0 
+- task: GithubRelease@0
   displayName: 'Create GitHub Release'      
   inputs:
     action: edit
     gitHubConnection: mconfalonieri-oauth
     repositoryName: mconfalonieri/sadplay
     tagSource: manual
-    tag: latest      
+    tag: latest
+    title: Latest build
+    releaseNotes:
+      Latest build from master
+      * *sadplay-$(Build.BuildNumber).tar.gz* - source distribution
     assets: |
          $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber).tar.gz
     assetUploadMode: delete
