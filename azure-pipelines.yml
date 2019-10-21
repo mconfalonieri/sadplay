@@ -11,8 +11,8 @@ pool:
 
 steps:
 - script: |
-    apt-get install fftw3-dev adplug-dev
-    displayName: 'prerequisites'
+    sudo apt-get install fftw3-dev adplug-dev
+  displayName: 'prerequisites'
 - script: |
     autoreconf --install
   displayName: 'autotools'
