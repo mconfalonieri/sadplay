@@ -27,7 +27,7 @@ steps:
     make
   displayName: 'build binary'
 - script: |
-    make
+    make dist
   displayName: 'build source distribution'
 - task: GithubRelease@0 
   displayName: 'Create GitHub Release'      
