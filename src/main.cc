@@ -28,15 +28,15 @@
 #include "sadplay.h"
 
 // The VERSION macro should be already defined.
-#ifndef VERSION
-#define VERSION "<unspecified>"
+#ifndef PACKAGE_VERSION
+#define PACKAGE_VERSION "<unspecified>"
 #endif
 
 /**
  * GPLv3 license text that is displayed at start.
  */
 const std::string SADPLAY_LICENSE =
-    "sadplay version " VERSION " - Copyright (C) 2019 Marco Confalonieri\n\n"
+    "sadplay version " PACKAGE_VERSION " - Copyright (C) 2019 Marco Confalonieri\n\n"
     "This program comes with ABSOLUTELY NO WARRANTY; for details type [W].\n"
     "This is free software, and you are welcome to redistribute it under\n"
     "certain conditions; type [C] for details.\n"
