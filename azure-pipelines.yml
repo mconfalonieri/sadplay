@@ -17,11 +17,21 @@ steps:
     autoreconf --install
   displayName: 'autotools'
 - script: |
-    ./configure
+    ./configure PACKAGE_VERSION=$(Build.BuildNumber)
   displayName: 'configure'
-- script: |
-    make check
-  displayName: 'unit tests'
+# Unit tests suspended
+# - script: |
+#    make check
+#  displayName: 'unit tests'
 - script: |
     make
   displayName: 'build'
+- task: GithubRelease@0 
+  displayName: 'Create GitHub Release'      
+  inputs:
+    gitHubConnection: mconfalonieri
+    repositoryName: mconfalonieri/sadplay
+    tagSource: manual
+    tag: $(Build.BuildNumber)      
+    assets: |
+         $(Build.ArtifactStagingDirectory)/sadplay-$(Build.BuildNumber)
