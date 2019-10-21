@@ -21,8 +21,8 @@ dnl
 
 AC_INIT([sadplay],
         m4_esyscmd_s([
-          if [ x$AZURE_BUILD_VERSION != "x" ]; then
-            echo $AZURE_BUILD_VERSION
+          if [ x$BUILD_BUILDNUMBER != "x" ]; then
+            echo $BUILD_BUILDNUMBER
           else
             echo 1.0.0-SNAPSHOT
           fi

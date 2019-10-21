@@ -17,8 +17,6 @@ steps:
     autoreconf --install
   displayName: 'autotools'
 - script: |
-    export AZURE_BUILD_VERSION=$(Build.BuildNumber)
-    set | grep -i build
     ./configure
   displayName: 'configure'
 # Unit tests suspended
