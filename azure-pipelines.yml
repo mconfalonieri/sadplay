@@ -23,8 +23,9 @@ steps:
 - script: |
     ./configure
   displayName: 'Source configuration'
- - script: |
-    make check; ./build-aux/printtest.sh
+- script: |
+    make check
+    ./build-aux/printtest.sh
   displayName: 'unit tests'
 - script: |
     make
