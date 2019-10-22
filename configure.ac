@@ -27,10 +27,12 @@ AC_INIT([sadplay],
             echo 1.0.0-SNAPSHOT
           fi
         ]), [marco@marcoconfalonieri.it])
-AM_INIT_AUTOMAKE([foreign parallel-tests color-tests])
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE([foreign parallel-tests color-tests -Wall -Werror])
 AC_CONFIG_MACRO_DIR([m4])
 AC_LANG(C++)
 AC_PROG_CXX
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 AX_CODE_COVERAGE
 

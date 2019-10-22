@@ -55,8 +55,8 @@ const int TEST_CMDLINE_INDEX = 2;
 /**
  * Prepare an array with the test command line arguments.
  * 
- * @param   argc        argument number
- * @param   cargv       arguments
+ * @param   argc            argument number
+ * @param   cargv           argument vector
  * 
  * @return  the command line arguments.
  */
@@ -72,7 +72,7 @@ char** get_cmdline_argv(int argc, const char* cargv[]) {
 /**
  * Releases the resources for the array with the command line arguments.
  * 
- * @param   argv        the array to be freed
+ * @param   argv            the array to be freed
  */
 void free_cmdline_argv(char* argv[]) {
     for (int i = 0; i < 5; i++) {
@@ -84,7 +84,7 @@ void free_cmdline_argv(char* argv[]) {
 /**
  * Prints the file list into a text file.
  * 
- * @param   out_file    the name of the output file
+ * @param   out_file        the name of the output file
  */
 void print_file_list(string out_file) {
     std::ofstream out_stream(out_file);
@@ -97,21 +97,21 @@ void print_file_list(string out_file) {
  * Compares the file list in the sadplay_args argument provided with the list
  * available in the test data.
  * 
- * @param   args        the sadplay_args object to check
+ * @param   args            the sadplay_args object to check
  *
  * @return  true if the comparison is successful
  */
 bool check_file_list(sadplay_args& args) {
     bool test_ok = true;
-    std::list<string>::const_iterator list_iterator = args.file_list.cbegin();
+    std::vector<string>::const_iterator v_iterator = args.file_list.cbegin();
     for (int idx = TEST_CMDLINE_INDEX; idx < TEST_CMDLINE_ARGC; idx++) {
         string exp_result(TEST_CMDLINE_ARGV[idx]);
-        string result = *list_iterator;
+        string result = *v_iterator;
         if (exp_result != result) {
             test_ok = false;
             break;
         }
-        list_iterator++;
+        v_iterator++;
     }
     return test_ok;
 }
@@ -166,6 +166,11 @@ bool test_read_file_list_from_file_2() {
     return test_ok;
 }
 
+/**
+ * Tests reading a list from the command line.
+ *
+ * @return  true if the test is successful
+ */
 bool test_read_command_line_1() {
     sadplay_args args;
     optind = 1;
@@ -179,6 +184,11 @@ bool test_read_command_line_1() {
     return test_ok;
 }
 
+/**
+ * Tests reading flags and list from the command line.
+ *
+ * @return  true if the test is successful
+ */
 bool test_read_command_line_2() {
     sadplay_args args;
     optind = 1;
@@ -196,6 +206,11 @@ bool test_read_command_line_2() {
     return test_ok;
 }
 
+/**
+ * Tests reading a command line with errors.
+ *
+ * @return  true if the test is successful
+ */
 bool test_read_command_line_3() {
     sadplay_args args;
     optind = 1;

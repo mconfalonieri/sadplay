@@ -25,14 +25,16 @@ AUTOMAKE_OPTIONS = subdir-objects
 # Main sources
 bin_PROGRAMS = sadplay
 sadplay_SOURCES = src/frequency_bar.cc src/main.cc src/main_support.cc \
-	src/sadplay.cc src/sdl_channel_bar.cc src/sdl_driver.cc \
-	src/spectrum_analyzer.cc src/adplug_player.cc src/texts.cc \
+	src/sadplay_args.cc src/sadplay.cc src/sdl_channel_bar.cc \
+	src/sdl_driver.cc src/spectrum_analyzer.cc src/adplug_player.cc \
+	src/texts.cc \
 	include/channel_bar.h include/display.h include/frequency_bar.h \
 	include/main_support.h include/sadplay.h include/sdl_channel_bar.h \
 	include/sdl_driver.h include/spectrum_analyzer.h include/texts.h \
-	include/adplug_player.h
+	include/adplug_player.h include/sadplay_args.h
 
 # Test cases
+TEST_LOG_DRIVER = "AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/build-aux/tap-driver.sh"
 TESTS = $(check_PROGRAMS)
 
 # Test programs
@@ -41,22 +43,25 @@ check_PROGRAMS = test_main_support test_sdl_channel_bar
 test_main_support_LIBS = $(CODE_COVERAGE_LIBS)
 test_main_support_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
 test_main_support_SOURCES = test/test_runner.cc test/test_main_support.cc \
-	src/main_support.cc include/main_support.h
+	src/main_support.cc src/sadplay_args.cc
 
 test_sdl_channel_bar_LIBS = $(CODE_COVERAGE_LIBS)
 test_sdl_channel_bar_CXXFLAGS = $(CODE_COVERAGE_CXXFLAGS) -DSADPLAY_TEST
 test_sdl_channel_bar_SOURCES = test/test_runner.cc \
-	test/test_sdl_channel_bar.cc src/sdl_channel_bar.cc \
-	include/sdl_channel_bar.h
+	test/test_sdl_channel_bar.cc src/sdl_channel_bar.cc
 
 # Other resources
-README.md: README.md
+EXTRA_DIST = README.md
+
+log-check:
+	echo TEST_LOG_DRIVER: $(TEST_LOG_DRIVER)
 
 # lcov report
 if CODE_COVERAGE_ENABLED
 cov-reset:
 	@rm -fr coverage
 	@find . -name "*.gcda" -exec rm {} \;
+	@find . -name "*.gcno" -exec rm {} \;
 	@lcov --directory . --zerocounters
 
 cov-report:

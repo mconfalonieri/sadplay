@@ -177,6 +177,7 @@ bool test_sdl_channel_bar_update_channel() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 
 /**
@@ -203,6 +204,7 @@ bool test_sdl_channel_bar_update_all() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 
 /**
@@ -229,6 +231,7 @@ bool test_sdl_channel_bar_reset_channels() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 
 /**
@@ -255,6 +258,7 @@ bool test_sdl_channel_bar_time_elapsed() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 
 /**
@@ -281,6 +285,7 @@ bool test_sdl_channel_bar_get_numchannels() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 
 /**
@@ -310,6 +315,7 @@ bool test_sdl_channel_bar_get_channels() {
     }
     
     destroy_test_harness(accessor, channel_bar);
+    return test_ok;
 }
 // Loads the tests in the appropriate array.
 void load_test_map(std::map<std::string, bool(*)()>& tests) {

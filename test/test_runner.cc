@@ -38,42 +38,23 @@ extern void load_test_map(test_map &tests);
 
 bool run_tests(test_map& tests) {
     bool result = true;
+    std::cout << "1.." << tests.size() << std::endl;
+    int i = 0;
     for (
                 test_map_iterator test_iterator = tests.cbegin();
                 test_iterator != tests.cend();
                 ++test_iterator
     ) {
         bool (*test_function)() = test_iterator->second;
-        std::cout << " - " << test_iterator->first << ": ";
         bool test_result = test_function();
         if (!test_result) {
             result = false;
-            std::cout << "FAILED." << std::endl;
+            std::cout << "not ok ";
         } else {
-            std::cout << "OK." << std::endl;
+            std::cout << "ok ";
         }
-    }
-    return result;
-}
-
-bool run_tests(test_map& tests, int argc, char* argv[]) {
-    bool result = true;
-    for (int idx = 1; idx < argc; idx++) {
-        test_map_iterator test_iterator = tests.find(string(argv[idx]));
-        if (test_iterator == tests.cend()) {
-            result = false;
-            std::cout << " - test " + string(argv[idx]) + " not found." << std::endl;
-            break;
-        }
-        bool (*test_function)() = test_iterator->second;
-        std::cout << " - " << test_iterator->first << ": ";
-        bool test_result = test_function();
-        if (!test_result) {
-            result = false;
-            std::cout << "FAILED." << std::endl;
-        } else {
-            std::cout << "OK." << std::endl;
-        }
+        std::cout << ++i << " ";
+        std::cout << "- " << test_iterator->first << std::endl;
     }
     return result;
 }
@@ -84,11 +65,6 @@ bool run_tests(test_map& tests, int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
     test_map tests;
     load_test_map(tests);
-    std::cout << "Running tests:" << std::endl;
-    bool result = ((argc > 1)? run_tests(tests, argc, argv) : run_tests(tests));
-    if (result) {
-        std::cout << (result? "All tests ran smoothly." : "Errors found.")
-                << std::endl;
-    }
+    bool result = run_tests(tests);
     return result? 0 : 1;
 }

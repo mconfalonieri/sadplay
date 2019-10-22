@@ -26,53 +26,10 @@
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
+#include "sadplay_args.h"
 #include "sdl_driver.h"
-
-/**
- * Command line arguments unrolled.
- */
-struct sadplay_args {
-    /**
-     * Constructor.
-     */
-    sadplay_args();
-
-    /**
-     * Log file.
-     */
-    std::string log_file;
-
-    /**
-     * Audio file list.
-     */
-    std::vector<std::string> file_list;
-
-    /**
-     * Verbose output.
-     */
-    bool verbose;
-
-     /**
-     * Command line parsing error.
-     */
-    bool error;
-
-    /**
-     * Repeat queue.
-     */
-    bool repeat;
-
-    /**
-     * Plays one song continuosly.
-     */
-    bool continuous;
-    
-    /**
-     * Shuffle playlist.
-     */
-    bool shuffle;
-};
 
 /**
  * Main application class.

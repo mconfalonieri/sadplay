@@ -13,7 +13,9 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive
+    sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive golang-go
+    mkdir ~/go
+    go install github.com/filmil/tap2junit/...
   displayName: 'Installing prerequisites'
 - script: |
     autoreconf --install
@@ -21,10 +23,10 @@ steps:
 - script: |
     ./configure
   displayName: 'Source configuration'
-# Unit tests suspended
-# - script: |
-#    make check
-#  displayName: 'unit tests'
+ - script: |
+    make check
+    for i in `ls -1 test_*.log`; do 
+  displayName: 'unit tests'
 - script: |
     make
   displayName: 'Binary build'

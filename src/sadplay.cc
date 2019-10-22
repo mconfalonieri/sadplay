@@ -32,14 +32,6 @@
 using std::string;
 using std::map;
 
-// Constructor
-sadplay_args::sadplay_args() : verbose(false), error(false), repeat(false),
-        continuous(false), shuffle(false) {
-            time_t now;
-            time(&now);
-            srand48(now);
-}
-
 // Assigning the constant value
 const string sadplay::DEFAULT_DRIVER_NAME = "sdl";
 

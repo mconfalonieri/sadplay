@@ -26,6 +26,12 @@
 
 #include <unistd.h>
 
+#ifdef SADPLAY_TEST
+#   define GETOPT_STRING ":scvl:f:r"
+#else
+#   define GETOPT_STRING "scvl:f:r"
+#endif // SADPLAY_TEST
+
 using std::ifstream;
 using std::string;
 
@@ -69,7 +75,7 @@ void read_command_line(sadplay_args* args, int argc, char* argv[]) {
     int c;
     string file;
     bool file_list_used = false;
-    while ((c = getopt(argc, argv, "scvl:f:r")) != -1) {
+    while ((c = getopt(argc, argv, GETOPT_STRING)) != -1) {
         switch (c) {
             case 'v':
                 args->verbose = true;
@@ -91,6 +97,7 @@ void read_command_line(sadplay_args* args, int argc, char* argv[]) {
                 args->shuffle = true;
                 break;
             case '?':
+            case ':':
                 args->error = true;
                 return;
         }
