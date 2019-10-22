@@ -13,7 +13,7 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive tap2junit
+    sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive libtap-formatter-junit-perl
   displayName: 'Installing prerequisites'
 - script: |
     autoreconf --install
