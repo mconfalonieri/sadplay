@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <ctime>
 #include <iostream>
 #include <map>
 #include <string>
@@ -45,19 +46,19 @@ bool run_tests(test_map& tests) {
                 test_iterator != tests.cend();
                 ++test_iterator
     ) {
-        time_t start, end;
         bool (*test_function)() = test_iterator->second;
-        time(&start);
+        clock_t start = clock();
         bool test_result = test_function();
-        time(&end);
+        clock_t end = clock();
         if (!test_result) {
             result = false;
             std::cout << "not ok ";
         } else {
             std::cout << "ok ";
         }
+        double delta = (end - start) / (CLOCKS_PER_SEC / 1000.0);
         std::cout << ++i << " ";
-        std::cout << "- " << test_iterator->first << " # time=" << (end - start) << "ms" << std::endl;
+        std::cout << "- " << test_iterator->first << " # time=" << delta << "ms" << std::endl;
     }
     return result;
 }
