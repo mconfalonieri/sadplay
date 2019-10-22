@@ -5,6 +5,8 @@
 
 trigger:
 - master
+- feature/*
+- bugs/*
 
 pool:
   vmImage: 'ubuntu-18.04'
@@ -12,23 +14,23 @@ pool:
 steps:
 - script: |
     sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive
-  displayName: 'prerequisites'
+  displayName: 'Installing prerequisites'
 - script: |
     autoreconf --install
-  displayName: 'autotools'
+  displayName: 'Running autotools'
 - script: |
     ./configure
-  displayName: 'configure'
+  displayName: 'Source configuration'
 # Unit tests suspended
 # - script: |
 #    make check
 #  displayName: 'unit tests'
 - script: |
     make
-  displayName: 'build binary'
+  displayName: 'Binary build'
 - script: |
     make dist
-  displayName: 'build source distribution'
+  displayName: 'Source distribution creation'
 - task: CopyFiles@1
   inputs:
     Contents: 'sadplay-$(Build.BuildNumber).tar.gz'

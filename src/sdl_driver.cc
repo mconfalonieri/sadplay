@@ -48,19 +48,30 @@ sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
 // Destructor.
 sdl_display_driver::~sdl_display_driver() {
     stop();
+    
+    int status = SDL_LockMutex(mutex);
+    if (status != 0) {
+        printf("Cannot lock mutex");
+        exit(127);
+    }
     if (timer_id != 0) {
         SDL_RemoveTimer(timer_id);
         timer_id = 0;
     }
+    renderer = NULL;
+    SDL_UnlockMutex(mutex);
+    SDL_DestroyMutex(mutex);
 
     delete analyzer;
     delete freq_bar;
     delete cbar;
 
-    SDL_DestroyMutex(mutex);
-
+ 
     delete[] colors_table;
 
+    SDL_DestroyWindow(window);
+    window = NULL;
+    
     //Quit SDL subsystems
     SDL_Quit();
 }
@@ -182,6 +193,7 @@ void sdl_display_driver::update_channel_bar() {
         printf("Cannot lock mutex");
         return;
     }
+    if (renderer == NULL) return;
     draw_bars();
     SDL_UnlockMutex(mutex);
 }
