@@ -24,7 +24,15 @@ steps:
 - script: |
     make check
     ./build-aux/printtest-linux.sh
-  displayName: 'unit tests'
+  displayName: 'Unit tests execution'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/test_*.log.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'Test results collection'
+    
 - script: |
     make
   displayName: 'Binary build'
