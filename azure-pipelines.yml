@@ -25,7 +25,7 @@ steps:
   displayName: 'Source configuration'
  - script: |
     make check
-    for i in `ls -1 test_*.log`; do 
+    for logfile in `ls -1 test_*.log`; do cat $logfile | ~/go/bin/tap2junit
   displayName: 'unit tests'
 - script: |
     make
