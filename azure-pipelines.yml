@@ -15,6 +15,7 @@ steps:
 - script: |
     sudo apt-get update && sudo apt-get install fftw3-dev libfftw3-mpi-dev libadplug-dev libsdl2-dev autoconf-archive golang-go
     mkdir ~/go
+    go get github.com/filmil/tap2junit/
     go install github.com/filmil/tap2junit/...
   displayName: 'Installing prerequisites'
 - script: |
