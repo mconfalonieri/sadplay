@@ -28,15 +28,17 @@
 #include <adplug/surroundopl.h>
 
 /**
- * AdPlug player.
+ * AdPlug player. It encapsulates the functionalities of the AdPlug library.
+ * The program uses this class to decode a song into a PCM stream.
  */
 class adplug_player {
     public:
         /**
-         * Constructor.
+         * Constructor. It accepts a file name and a boolean value that
+         * determines if the song should be played again after it ends.
          * 
          * @param   filename        AdLib music file to play
-         * @param   continuous      true to rewind the song
+         * @param   continuous      true to rewind the song when it has ended
          */
         adplug_player(const std::string& filename, bool continuous);
 

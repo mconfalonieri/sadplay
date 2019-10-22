@@ -64,7 +64,8 @@ class frequency_bar {
          * @param   result              the result, expressed as an array of
          *                              complex numbers.
          */
-        void acquire_fft(int sample_rate, int num_samples, const fftw_complex* result);
+        void acquire_fft(int sample_rate, int num_samples,
+                const fftw_complex* result);
 
     protected:
         /**

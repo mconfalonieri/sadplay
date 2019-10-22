@@ -34,8 +34,8 @@
 /**
  * Function that must be called by the SDL timer to update the channel bar.
  * 
- * @param   time_elapsed        time elapsed since last update in milliseconds
- * @param   param               the channel bar that needs to be updated
+ * @param   time_elapsed    time elapsed since last update in milliseconds
+ * @param   param           the channel bar that needs to be updated
  * 
  * @return  if 0 is returned, the timer is cancelled.
  */
@@ -94,10 +94,19 @@ class sdl_display_driver : public display {
          */
         bool play(adplug_player* player);
 
+        /**
+         * Pauses the current song.
+         */
         void pause();
 
+        /**
+         * Resumes the current song.
+         */
         void cont();
 
+        /**
+         * Stops the current song.
+         */
         void stop();
         
         /**
@@ -197,11 +206,13 @@ class sdl_display_driver : public display {
          */
         static void audio_callback(void* param, Uint8* audiobuf, int len);
 
+        /**
+         * Closes the audio device.
+         */
         void close_audio_device();
 
     private:
-
-        // Declares the function as friend.
+        // Declares the callback function as friend.
         friend Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
 
         /**
@@ -249,12 +260,24 @@ class sdl_display_driver : public display {
          */
         const static rgb BLACK;
 
+        /**
+         * The "wanted" specification.
+         */
         SDL_AudioSpec spec;
 
+        /**
+         * The frequency bar used for the spectrum analyzer.
+         */
         frequency_bar* freq_bar;
 
+        /**
+         * The spectrum analyzer.
+         */
         spectrum_analyzer* analyzer;
 
+        /**
+         * The AdPlug player instance.
+         */
         adplug_player* player;
 
         /**

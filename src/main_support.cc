@@ -30,7 +30,8 @@ using std::ifstream;
 using std::string;
 
 // Reads the file list from a text file or the standard input.
-void read_file_list_from_file(sadplay_args* args, string file, std::istream &input) {
+void read_file_list_from_file(sadplay_args* args, string file,
+        std::istream &input) {
     std::istream* file_list;
 
     // Open a file or assign our stream to standard input.
@@ -56,7 +57,8 @@ void read_file_list_from_file(sadplay_args* args, string file, std::istream &inp
 }
 
 // Reads the file list from the command line arguments.
-void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int opt_index) {
+void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[],
+        int opt_index) {
     for (int idx = opt_index; idx < argc; idx++) {
         args->file_list.push_back(string(argv[idx]));
     }

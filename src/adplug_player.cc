@@ -56,7 +56,8 @@ adplug_player::~adplug_player() {
 // https://github.com/adplug/adplay-unix/blob/master/src/sdl.cc
 // Copyright (C) 2001 - 2003 Simon Peter <dn.tlp@gmx.net>
 // This code was released by the author under GPL v2.
-void adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_size) {
+void adplug_player::fill_buffer(void* audiobuf, int len,
+        unsigned char sample_size) {
     static long minicnt = 0;
     if (sample_size == 0) sample_size = 1;
     long i, towrite = len / sample_size;
@@ -77,7 +78,8 @@ void adplug_player::fill_buffer(void* audiobuf, int len, unsigned char sample_si
             }
         }
         float refresh = player->getrefresh();
-        i = min(towrite, (long)(minicnt / ((refresh == 0)? 1 : refresh) + 4) & ~3);
+        i = min(towrite,
+                (long)(minicnt / ((refresh == 0)? 1 : refresh) + 4) & ~3);
         opl->update((short *)pos, i);
         pos += i * sample_size; towrite -= i;
         minicnt -= (long)(player->getrefresh() * i);

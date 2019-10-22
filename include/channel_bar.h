@@ -36,15 +36,15 @@ class channel_bar {
         /**
          * Updates a channel.
          * 
-         * @param   channel     the channel that needs to be updated
-         * @param   value       the new value for the channel
+         * @param   channel         the channel that needs to be updated
+         * @param   value           the new value for the channel
          */
         virtual void update(int channel, int value) = 0;
 
         /**
          * Updates all channels.
          * 
-         * @param   values    the values for the channels
+         * @param   values          the values for the channels
          */
         virtual void update_all(const int values[]) = 0;
 

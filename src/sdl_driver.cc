@@ -58,9 +58,12 @@ sdl_display_driver::~sdl_display_driver() {
         SDL_RemoveTimer(timer_id);
         timer_id = 0;
     }
+    SDL_DestroyRenderer(renderer);
     renderer = NULL;
+    
     SDL_UnlockMutex(mutex);
     SDL_DestroyMutex(mutex);
+    mutex = NULL;
 
     delete analyzer;
     delete freq_bar;
@@ -71,17 +74,20 @@ sdl_display_driver::~sdl_display_driver() {
 
     SDL_DestroyWindow(window);
     window = NULL;
-    
+
     //Quit SDL subsystems
     SDL_Quit();
 }
 
 // Initializer
 bool sdl_display_driver::initialize(int num_channels) {  
-    window = SDL_CreateWindow("sadplay", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("sadplay",
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     
     if (window == NULL) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        printf("Window could not be created! SDL_Error: %s\n",
+                SDL_GetError());
 
         return false;
     }
@@ -117,7 +123,8 @@ void sdl_display_driver::prepare_colors_table() {
 }
 
 // Normalizes colors.
-inline void sdl_display_driver::normalize_color(rgb &color, int r, int g, int b) {
+inline void sdl_display_driver::normalize_color(rgb &color,
+        int r, int g, int b) {
     if (r > 255) r = 255;
     if (g > 255) g = 255;
     if (b > 255) b = 255;
@@ -140,7 +147,8 @@ void sdl_display_driver::draw_bar(int x, int width, int level) {
         int y = y_max - dy;
         int actual_level = (y_span - dy) * 100 / y_span;
         const rgb &color = colors_table[actual_level];
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, SDL_ALPHA_OPAQUE);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b,
+                SDL_ALPHA_OPAQUE);
         SDL_RenderDrawLine(renderer, x, y, x + width, y);
     }
 
@@ -162,7 +170,8 @@ void sdl_display_driver::draw_bars() {
     delete[] channels;
 }
 
-void sdl_display_driver::prepare_rectangle(SDL_Rect &rect, int x, int y, int w, int h) {
+void sdl_display_driver::prepare_rectangle(SDL_Rect &rect, int x, int y,
+        int w, int h) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -238,9 +247,11 @@ void sdl_display_driver::stop() {
     }
 }
 
-void sdl_display_driver::audio_callback(void* param, Uint8* audiobuf, int len) {
-     sdl_display_driver* self = (sdl_display_driver*) param;
-    unsigned char sample_size = self->spec.channels * (self->spec.format == AUDIO_U8 ? 1 : 2);
+void sdl_display_driver::audio_callback(void* param, Uint8* audiobuf,
+        int len) {
+    sdl_display_driver* self = (sdl_display_driver*) param;
+    unsigned char sample_size = self->spec.channels *
+            (self->spec.format == AUDIO_U8 ? 1 : 2);
 
     self->player->fill_buffer((void*) audiobuf, len, sample_size);
     

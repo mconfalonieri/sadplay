@@ -19,8 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef _SADPLAY_ANALYZER_H_
-#define _SADPLAY_ANALYZER_H_
+#ifndef _SADPLAY_SPECTRUM_ANALYZER_H_
+#define _SADPLAY_SPECTRUM_ANALYZER_H_
 
 #include <vector>
 
@@ -146,4 +146,4 @@ class spectrum_analyzer {
         double* hann_multipliers;
 };
 
-#endif // _SADPLAY_ANALYZER_H_
+#endif // _SADPLAY_SPECTRUM_ANALYZER_H_

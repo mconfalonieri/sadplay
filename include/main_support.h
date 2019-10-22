@@ -31,19 +31,20 @@
  * for reading the list from the standard input. The list is read as one file
  * per line.
  * 
- * @param   args        the sadplay_args variable to fill.
- * @param   file        the file list file
- * @param   input       the input stream to use as stdin
+ * @param   args                    the sadplay_args variable to fill.
+ * @param   file                    the file list file
+ * @param   input                   the input stream to use as stdin
  */
-void read_file_list_from_file(sadplay_args* args, std::string file, std::istream &input = std::cin);
+void read_file_list_from_file(sadplay_args* args, std::string file,
+        std::istream &input = std::cin);
 
 /**
  * Reads the audio file list from the command line vector.
  * 
- * @param   args        the sadplay_args variable.
- * @param   argc        number of command line arguments
- * @param   argv        array of command line arguments
- * @param   index       the index to start reading from.
+ * @param   args                    the sadplay_args variable.
+ * @param   argc                    number of command line arguments
+ * @param   argv                    array of command line arguments
+ * @param   index                   the index to start reading from.
  */
 void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int index);
 
@@ -51,9 +52,9 @@ void read_file_list_from_argv(sadplay_args* args, int argc, char* argv[], int in
  * Reads the command line options. This function reads the command line
  * arguments and parses them into the sadplay_args structure provided.
  * 
- * @param   args        the sadplay_args variable
- * @param   argc        number of command line arguments
- * @param   argv        array of command line arguments
+ * @param   args                    the sadplay_args variable
+ * @param   argc                    number of command line arguments
+ * @param   argv                    array of command line arguments
  */
 void read_command_line(sadplay_args* args, int argc, char* argv[]);
 

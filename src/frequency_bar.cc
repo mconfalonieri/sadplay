@@ -44,7 +44,8 @@ frequency_bar::~frequency_bar() {
 }
 
 // Acquires the results.
-void frequency_bar::acquire_fft(int sample_rate, int num_samples, const fftw_complex* result) {
+void frequency_bar::acquire_fft(int sample_rate, int num_samples,
+        const fftw_complex* result) {
     double energies[CHANNEL_BARS] = { 0 };
     int channels[CHANNEL_BARS] = { 0 };
     const int LAST_CHANNEL = CHANNEL_BARS - 1;
@@ -63,7 +64,8 @@ void frequency_bar::acquire_fft(int sample_rate, int num_samples, const fftw_com
 }
 
 // Prepares the channels to be loaded in the channel bar.
-void frequency_bar::prepare_channels(const double* in_buffer, int* out_buffer) {
+void frequency_bar::prepare_channels(const double* in_buffer,
+        int* out_buffer) {
     for (int i = 0; i < CHANNEL_BARS; i++) {
         double db_value = 10.0 * log10(in_buffer[i]) / 1.4;
         out_buffer[i] = (db_value > 100)? 100 :

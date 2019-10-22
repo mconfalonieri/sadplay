@@ -98,7 +98,7 @@ class sadplay {
         /**
          * Runs the application.
          * 
-         * @param   args        the parsed command line arguments
+         * @param   args            the parsed command line arguments
          * 
          * @return  the exit code for the program.
          */
@@ -111,7 +111,7 @@ class sadplay {
          * Prints a log line. It prints a line in the log, and eventually on
          * the screen, taking into account the verbose flag.
          * 
-         * @param   line        line to be printed.
+         * @param   line            line to be printed.
          */
         void log(std::string line);
 
@@ -119,7 +119,7 @@ class sadplay {
          * Handles the SDL events. It also determines if the song has ended,
          * pushing a CMD_NEXT in case.
          * 
-         * @param   player      the player
+         * @param   player          the AdPlug player
          * 
          * @return  command issued.
          */
@@ -129,7 +129,7 @@ class sadplay {
          * Handles the keyboard events. If an unsupported key is pressed, it
          * returns CMD_NONE.
          * 
-         * @param   e           event that should be decoded.
+         * @param   e               event that should be decoded.
          *
          * @return  the corresponding command.
          */
@@ -138,14 +138,14 @@ class sadplay {
         /**
          * Shows the text on screen.
          * 
-         * @param   text        the text that should be shown.
+         * @param   text            the text that should be shown.
          */
         void show_text(const char* text);
 
         /**
          * Shuffle playlist.
          * 
-         * @param   playlist    reference to the playlist vector
+         * @param   playlist        reference to the playlist vector
          */
         void shuffle(std::vector<std::string> &playlist);
 

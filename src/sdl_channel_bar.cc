@@ -22,7 +22,8 @@
 #include "sdl_channel_bar.h"
 
 // Constructor: it creates the channel vector and initializes the mutex.
-sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL), channels(num_channels) {
+sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL),
+        channels(num_channels) {
     this->mutex = SDL_CreateMutex();
     reset_channels();
 }

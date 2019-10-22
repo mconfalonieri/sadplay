@@ -67,7 +67,8 @@ void spectrum_analyzer::acquire(int n, const short* raw_buffer) {
         double h = hann_multipliers[in_pos];
 
         // Prepare the sample using the window function.
-        in_buffer[in_pos] = h * acquire_sample(buffer_len, raw_pos, raw_buffer);
+        in_buffer[in_pos] = h * acquire_sample(buffer_len, raw_pos,
+                raw_buffer);
     } 
 }
 
