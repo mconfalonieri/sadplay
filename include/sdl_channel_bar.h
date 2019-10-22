@@ -41,6 +41,11 @@ class sdl_channel_bar_test_access;
 class sdl_channel_bar : public channel_bar {
     public:
         /**
+         * Milliseconds that the bar will last from 100% to 0.
+         */
+        static const int DECAY_TIMER = 2000;
+
+        /**
          * Channel bar constructor. It builds a new instance of the SDL
          * channel bar with the given number of channels.
          * 
@@ -111,11 +116,6 @@ class sdl_channel_bar : public channel_bar {
          * The channels in the channel bar.
          */
         std::vector<int> channels;
-
-        /**
-         * Milliseconds that the bar will last from 100% to 0.
-         */
-        static const int DECAY_TIMER = 2000;
 };
 
 #endif // _SADPLAY_SDL_CHANNEL_BAR_H_

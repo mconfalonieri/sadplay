@@ -240,20 +240,19 @@ bool test_sdl_channel_bar_reset_channels() {
  * @return  true if the test is successful
  */
 bool test_sdl_channel_bar_time_elapsed() {
+    int interval = 10 * sdl_channel_bar::DECAY_TIMER / 100;
     sdl_channel_bar* channel_bar;
     sdl_channel_bar_test_access* accessor;
     create_test_harness(channel_bar, accessor);
     channel_bar->update_all(TEST_CHANNEL_VALUES2);
-    channel_bar->time_elapsed(10);
+    channel_bar->time_elapsed(interval);
     bool test_ok = check_channels(accessor, TEST_CHANNEL_VALUES);
-
     // Tests mutex failure.
     if (test_ok) {
-        channel_bar->update_all(TEST_CHANNEL_VALUES2);
         SDL_mutex* mutex = accessor->get_mutex();
         accessor->set_mutex(NULL);
-        channel_bar->time_elapsed(10);
-        test_ok = check_channels(accessor, TEST_CHANNEL_VALUES2);
+        channel_bar->time_elapsed(interval);
+        test_ok = check_channels(accessor, TEST_CHANNEL_VALUES);
         accessor->set_mutex(mutex);
     }
     
@@ -303,12 +302,11 @@ bool test_sdl_channel_bar_get_channels() {
     channel_bar->update_all(TEST_CHANNEL_VALUES);
     channel_bar->get_channels(test_bar);
     bool test_ok = check_channels(accessor, test_bar);
-    
     // Tests mutex failure.
     if (test_ok) {
-        channel_bar->update_all(TEST_CHANNEL_VALUES2);
         SDL_mutex* mutex = accessor->get_mutex();
         accessor->set_mutex(NULL);
+        channel_bar->update_all(TEST_CHANNEL_VALUES2);
         channel_bar->get_channels(test_bar);
         test_ok = check_channels(accessor, TEST_CHANNEL_VALUES);
         accessor->set_mutex(mutex);
