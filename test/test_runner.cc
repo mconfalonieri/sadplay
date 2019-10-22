@@ -45,8 +45,11 @@ bool run_tests(test_map& tests) {
                 test_iterator != tests.cend();
                 ++test_iterator
     ) {
+        time_t start, end;
         bool (*test_function)() = test_iterator->second;
+        time(&start);
         bool test_result = test_function();
+        time(&end);
         if (!test_result) {
             result = false;
             std::cout << "not ok ";
@@ -54,7 +57,7 @@ bool run_tests(test_map& tests) {
             std::cout << "ok ";
         }
         std::cout << ++i << " ";
-        std::cout << "- " << test_iterator->first << std::endl;
+        std::cout << "- " << test_iterator->first << " # time=" << (end - start) << "ms" << std::endl;
     }
     return result;
 }
