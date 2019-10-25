@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/mconfalonieri/sadplay/_apis/build/status/sadplay-latest?branchName=master)](https://dev.azure.com/mconfalonieri/sadplay/_build/latest?definitionId=1&branchName=master)
+
 # sadplay
 
 Sadplay is a simple, old-school AdLib player that uses the
