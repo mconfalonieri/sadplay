@@ -46,8 +46,7 @@ The following keys can be used to control sadplay during the execution.
 | `H`                            | Get help on commands    |
 
 ## Compilation
-The compilation has been tested on Ubuntu 18.04.3 LTS and on MacOS X (I don't
-remember which version).
+The compilation has been tested on Ubuntu 18.04.3 LTS and on MacOS Mojave (10.14.6)
 
 ### Prerequisites
 The following libraries should be installed, with their headers:
