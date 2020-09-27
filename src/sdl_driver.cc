@@ -21,6 +21,8 @@
 
 #include "sdl_driver.h"
 
+#include <iostream>
+
 #include "spectrum_analyzer.h"
 
 // Implementation of the callback.
@@ -67,6 +69,7 @@ sdl_display_driver::~sdl_display_driver() {
 
     delete analyzer;
     delete freq_bar;
+    delete channels;
     delete cbar;
 
  
@@ -93,6 +96,12 @@ bool sdl_display_driver::initialize(int num_channels) {
     }
 
     renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL) {
+        printf("Renderer could not be created! SDL_Error: %s\n",
+                SDL_GetError());
+
+        return false;
+    }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
@@ -105,6 +114,7 @@ bool sdl_display_driver::initialize(int num_channels) {
 
     // Create the channel bar.
     cbar = new sdl_channel_bar(num_channels);
+    channels = new int[num_channels];
 
     freq_bar = new frequency_bar(cbar);
 
@@ -158,16 +168,13 @@ void sdl_display_driver::draw_bar(int x, int width, int level) {
 void sdl_display_driver::draw_bars() {
     int num_channels = cbar->get_numchannels();
     int step = H_SPAN / num_channels;
-
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    int* channels = new int[num_channels];
     cbar->get_channels(channels);
     for (int c = 0; c < num_channels; c++) {
         draw_bar(BORDER + (c * step) + step / 5, step * 3 / 5, channels[c]);
     }
     SDL_RenderPresent(renderer);
-    delete[] channels;
 }
 
 void sdl_display_driver::prepare_rectangle(SDL_Rect &rect, int x, int y,

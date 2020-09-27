@@ -284,6 +284,11 @@ class sdl_display_driver : public display {
          * Audio device ID.
          */
         SDL_AudioDeviceID audio_dev_id;
+
+        /**
+         * Channel percentages.
+         */
+        int* channels;
 };
 
 #endif // _SADPLAY_SDL_DRIVER_H_
