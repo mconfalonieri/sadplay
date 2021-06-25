@@ -18,12 +18,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-#include "sdl_channel_bar.h"
-
 #include <iostream>
 #include <map>
 #include <string>
+
+#ifndef SADPLAY_TEST
+#define SADPLAY_TEST
+#endif
+
+#include "sdl_channel_bar.h"
 
 const int TEST_CHANNELS_NUM = 8;
 const int TEST_CHANNEL_VALUES[] = {10, 11, 12, 13, 14, 15, 16, 17};

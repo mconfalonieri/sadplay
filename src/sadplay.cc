@@ -123,6 +123,7 @@ void sadplay::main_cycle(sadplay_args* args, adplug_player* player) {
                     show_text(msg.c_str());
                     cmd = CMD_NONE;
             }
+            driver->render();
         }
         log("Stopping the music.");
         driver->stop();

@@ -64,7 +64,7 @@ class sdl_display_driver : public display {
         /**
          * Time interval.
          */
-        const static Uint32 TIMER_INTERVAL = 20;
+        const static Uint32 TIMER_INTERVAL = 20U;
 
         /**
          * Constructor.
@@ -120,6 +120,11 @@ class sdl_display_driver : public display {
          * @return  the channel bar
          */
         channel_bar* get_channel_bar();
+
+        /**
+         * Renders the scene.
+         */
+        void render();
 
     protected:
         /**
@@ -212,8 +217,6 @@ class sdl_display_driver : public display {
         void close_audio_device();
 
     private:
-        // Declares the callback function as friend.
-        friend Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param);
 
         /**
          * Horizontal span.
@@ -221,14 +224,14 @@ class sdl_display_driver : public display {
         const static int H_SPAN = (SCREEN_WIDTH - (2 * BORDER));
 
         /**
+         * Ticks since the last channel bar update.
+         */
+        Uint32 last_update_ticks;
+
+        /**
          * Mutex for on-screen operations.
          */
         SDL_mutex* mutex;
-
-        /**
-         * Timer ID for bar update.
-         */
-        SDL_TimerID timer_id;
 
         /**
          * Time rID for the player.

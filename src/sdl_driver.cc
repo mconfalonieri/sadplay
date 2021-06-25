@@ -25,18 +25,10 @@
 
 #include "spectrum_analyzer.h"
 
-// Implementation of the callback.
-extern "C" Uint32 sdl_channel_bar_callback(Uint32 time_elapsed, void* param) {
-    sdl_display_driver* driver = (sdl_display_driver*) param;
-    driver->update_channel_bar(time_elapsed);
-    return sdl_display_driver::TIMER_INTERVAL;
-}
-
 // Constructor.
-sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_id(0),
-        timer_player(0), cbar(NULL), freq_bar(NULL), analyzer(NULL),
-        audio_dev_id(0) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0) {
+sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_player(0),
+        cbar(NULL), freq_bar(NULL), analyzer(NULL), audio_dev_id(0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(255);
     }
@@ -56,10 +48,7 @@ sdl_display_driver::~sdl_display_driver() {
         printf("Cannot lock mutex");
         exit(127);
     }
-    if (timer_id != 0) {
-        SDL_RemoveTimer(timer_id);
-        timer_id = 0;
-    }
+
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
     
@@ -95,7 +84,7 @@ bool sdl_display_driver::initialize(int num_channels) {
         return false;
     }
 
-    renderer =  SDL_CreateRenderer(window, -1, 0);
+    renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n",
                 SDL_GetError());
@@ -105,12 +94,20 @@ bool sdl_display_driver::initialize(int num_channels) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
-    // Clear winow
+    // Clear the window
     SDL_RenderClear(renderer);
 
-    //Update the surface
+    // Update the surface
     SDL_RenderPresent(renderer);
 
+    // Draws a red square
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_Rect rect; rect.x = 10; rect.y = 10; rect.h = 10; rect.w = 10;
+    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderPresent(renderer);
+
+    // Set last render ticks
+    last_update_ticks = SDL_GetTicks();
 
     // Create the channel bar.
     cbar = new sdl_channel_bar(num_channels);
@@ -119,8 +116,6 @@ bool sdl_display_driver::initialize(int num_channels) {
     freq_bar = new frequency_bar(cbar);
 
     analyzer = new spectrum_analyzer(freq_bar);
-
-    timer_id = SDL_AddTimer(TIMER_INTERVAL, sdl_channel_bar_callback, this);
 
     return true;
 }
@@ -219,7 +214,7 @@ channel_bar* sdl_display_driver::get_channel_bar() {
     return this->cbar;
 }
 
-// Updates the channel bar. It is called by the callback.
+// Updates the channel bar.
 void sdl_display_driver::update_channel_bar(Uint32 time_elapsed) {
     update_channel_bar();
     cbar->time_elapsed(time_elapsed);
@@ -272,4 +267,15 @@ void sdl_display_driver::close_audio_device() {
         SDL_CloseAudioDevice(audio_dev_id);
         audio_dev_id = 0;
     }
+}
+
+void sdl_display_driver::render() {
+    Uint32 ticks = SDL_GetTicks();
+    Uint32 elapsed_ticks = ticks - last_update_ticks;
+    if (elapsed_ticks >= TIMER_INTERVAL) {
+        update_channel_bar(elapsed_ticks);
+        last_update_ticks = ticks;
+    }
+
+    
 }
