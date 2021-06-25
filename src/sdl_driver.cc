@@ -95,7 +95,7 @@ bool sdl_display_driver::initialize(int num_channels) {
         return false;
     }
 
-    renderer =  SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer =  SDL_CreateRenderer(window, -1, 0);
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n",
                 SDL_GetError());
