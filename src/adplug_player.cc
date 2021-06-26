@@ -42,13 +42,13 @@ adplug_player::adplug_player(const string& filename, bool continuous) :
     opl_props[0].opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE,
             true, false);
     opl_props[0].use16bit = true;
-    opl_props[0].stereo = true;
+    opl_props[0].stereo = false;
 
     // Initialize OPL#1
     opl_props[1].opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE,
             true, false);
     opl_props[1].use16bit = true;
-    opl_props[1].stereo = true;
+    opl_props[1].stereo = false;
 
     // Surround, 'cause it matters.
     opl = new CSurroundopl(&opl_props[0], &opl_props[1], true);
