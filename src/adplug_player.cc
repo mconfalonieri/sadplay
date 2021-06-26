@@ -37,11 +37,21 @@ using std::string;
 // Constructor. It initializes the audio data.
 adplug_player::adplug_player(const string& filename, bool continuous) :
         opl(NULL), continuous(continuous) {
-    opls[0] = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
-    opls[1] = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
+    
+    // Initialize OPL#0
+    opl_props[0].opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE,
+            true, false);
+    opl_props[0].use16bit = true;
+    opl_props[0].stereo = true;
+
+    // Initialize OPL#1
+    opl_props[1].opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE,
+            true, false);
+    opl_props[1].use16bit = true;
+    opl_props[1].stereo = true;
 
     // Surround, 'cause it matters.
-    opl = new CSurroundopl(opls[0], opls[1], true);
+    opl = new CSurroundopl(&opl_props[0], &opl_props[1], true);
     player = CAdPlug::factory(filename, opl);
     ended = (player == NULL);
 }
