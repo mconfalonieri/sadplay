@@ -24,7 +24,7 @@ AC_INIT([sadplay],
           if [ x$BUILD_BUILDNUMBER != "x" ]; then
             echo $BUILD_BUILDNUMBER
           else
-            echo 1.1.0-SNAPSHOT
+            echo 1.1.0
           fi
         ]), [marco@marcoconfalonieri.it])
 AC_CONFIG_AUX_DIR([build-aux])
