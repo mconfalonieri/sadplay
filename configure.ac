@@ -106,6 +106,26 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <adplug/surroundopl.h>], [CSurroundopl
    AC_DEFINE(HAVE_ADPLUG_SURROUND,, [Defined if AdPlug supports the surround/harmonic synth])
 AC_MSG_RESULT([yes]), AC_MSG_RESULT([no - AdPlug >= 2.2 required]))
 
+# Check if AdPlug's surround synth uses COPLprops
+AC_MSG_CHECKING([whether AdPlug's surround synth uses COPLprops])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+  #include <adplug/surroundopl.h>
+  #include <adplug/temuopl.h>
+  void createOPLProps(COPLprops* coplprops) {
+    coplprops->opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
+    coplprops->use16bit = true;
+    coplprops->stereo = false;
+  }
+],
+[
+  COPLprops opl[2];
+  createOPLProps(opl);
+  createOPLProps(opl + 1); 
+  CSurroundopl csurroundopl(opl, opl + 1, true);
+])],
+   AC_DEFINE(HAVE_ADPLUG_COPLPROPS,, [Defined if AdPlug's CSurroundopl uses COPLprops arguments])
+AC_MSG_RESULT([yes]), AC_MSG_RESULT([no]))
+
 # Check if AdPlug supports NukedOPL
 AC_MSG_CHECKING([whether AdPlug supports the NukedOPL synth])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <adplug/nemuopl.h>], [CNemuopl *dummy;])],

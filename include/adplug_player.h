@@ -76,8 +76,9 @@ class adplug_player {
         /**
          * The OPL emulators for surround.
          */
-        Copl* opls[2];
-
+#ifdef HAVE_ADPLUG_COPLPROPS
+        COPLprops opls[2]
+#endif
         /**
          * Player.
          */
