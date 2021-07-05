@@ -24,7 +24,7 @@ AC_INIT([sadplay],
           if [ x$BUILD_BUILDNUMBER != "x" ]; then
             echo $BUILD_BUILDNUMBER
           else
-            echo 1.1.1
+            echo 1.1.2
           fi
         ]), [marco@marcoconfalonieri.it])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -118,7 +118,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
   }
 ],
 [
-  COPLprops opl[2];
+  COPLprops opl[[2]];
   createOPLProps(opl);
   createOPLProps(opl + 1); 
   CSurroundopl csurroundopl(opl, opl + 1, true);
