@@ -112,7 +112,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
   #include <adplug/surroundopl.h>
   #include <adplug/temuopl.h>
   void createOPLProps(COPLprops* coplprops) {
-    coplprops->opl = new CTemuopl(spectrum_analyzer::SAMPLING_RATE, true, false);
+    coplprops->opl = new CTemuopl(44100, true, false);
     coplprops->use16bit = true;
     coplprops->stereo = false;
   }
