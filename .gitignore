@@ -16,7 +16,6 @@ Makefile
 /autom4te.cache
 /autoscan.log
 /autoscan-*.log
-/aclocal.m4
 /compile
 /config.guess
 /config.h.in
