@@ -116,7 +116,10 @@ bool check_channels(sdl_channel_bar_test_access* accessor, const int values[]) {
  * @param   channel_bar     reference to the channel bar pointer
  * @param   accessor        reference to the accessor pointer
  */
-void create_test_harness(sdl_channel_bar* &channel_bar, sdl_channel_bar_test_access* &accessor) {
+void create_test_harness(
+        sdl_channel_bar* &channel_bar,
+        sdl_channel_bar_test_access* &accessor
+) {
     SDL_Init(0);
     channel_bar = new sdl_channel_bar(TEST_CHANNELS_NUM);
     accessor = new sdl_channel_bar_test_access(channel_bar);
@@ -128,7 +131,10 @@ void create_test_harness(sdl_channel_bar* &channel_bar, sdl_channel_bar_test_acc
  * @param   accessor        accessor pointer
  * @param   channel_bar     channel bar pointer
  */
-void destroy_test_harness(sdl_channel_bar_test_access* accessor, sdl_channel_bar* channel_bar) {
+void destroy_test_harness(
+        sdl_channel_bar_test_access* accessor,
+        sdl_channel_bar* channel_bar
+) {
     delete accessor;
     delete channel_bar;
     SDL_Quit();

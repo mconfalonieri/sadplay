@@ -21,18 +21,13 @@
 #ifndef _SADPLAY_SDL_CHANNEL_BAR_H_
 #define _SADPLAY_SDL_CHANNEL_BAR_H_
 
-
 #include <vector>
-
 #include <SDL.h>
-
 #include "channel_bar.h"
 
 #ifdef SADPLAY_TEST
-
 // Forward declaration of the accessor class used for tests.
 class sdl_channel_bar_test_access;
-
 #endif // SADPLAY_TEST
 
 /**
