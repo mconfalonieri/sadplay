@@ -195,7 +195,7 @@ void sadplay::show_text(const char* text) {
 
 // Shuffles the playlist. Using the STL-provided function and convincing
 // the compiler to use it would have created different compilations options to
-// e used on different systems, most notably MacOS X.
+// be used on different systems, most notably MacOS X.
 void sadplay::shuffle(std::vector<string> &playlist) {
     int size = playlist.size();
     std::vector<string> original_playlist(playlist);
