@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "sadplay_args.h"
+#include <ctime>
 
 // Constructor
 sadplay_args::sadplay_args() : verbose(false), error(false), repeat(false),
