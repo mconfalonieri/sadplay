@@ -28,20 +28,30 @@
  * The display class represents an abstract view for the application.
  */
 class display {
+    private:
+        int max_channels;
+
+    protected:
+        /**
+         * Constructor. It accepts the maximum number of channels that can be
+         * visualized as frequency bars on this display.
+         * 
+         * @param max_channels maximum number of channels.
+         */
+        display(int max_channels);
+
     public:
         /**
          * Virtual destructor.
          */
-        virtual ~display() {}
+        virtual ~display();
 
         /**
          * Initializes the view.
-         * 
-         * @param   num_channels    number of channels
          *
          * @return  true if correctly initialized
          */
-        virtual bool initialize(int num_channels) = 0;
+        virtual bool initialize() = 0;
 
         /**
          * Updates the channel bar.
@@ -54,6 +64,13 @@ class display {
          * @return  the channel bar
          */
         virtual channel_bar* get_channel_bar() = 0;
+
+        /**
+         * Returns the maximum number of supported channels.
+         * 
+         * @return the number of supported channels
+         */
+        virtual int get_max_channels();
 
 };
 

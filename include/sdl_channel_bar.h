@@ -43,10 +43,8 @@ class sdl_channel_bar : public channel_bar {
         /**
          * Channel bar constructor. It builds a new instance of the SDL
          * channel bar with the given number of channels.
-         * 
-         * @param   num_channels        number of channels
          */
-        sdl_channel_bar(int num_channels);
+        sdl_channel_bar();
 
         /**
          * Destructor.
@@ -86,7 +84,14 @@ class sdl_channel_bar : public channel_bar {
          * 
          * @return  the number of channels
          */
-        int get_numchannels();
+        const int get_numchannels();
+
+        /**
+         * Returns the channel limits.
+         * 
+         * @return an array with as many alements as the number of channels
+         */
+        const double* get_channel_limits();
 
         /**
          * Returns the channel.
@@ -101,6 +106,15 @@ class sdl_channel_bar : public channel_bar {
         /// Provide access to test class
         friend class sdl_channel_bar_test_access;
 #endif // SADPLAY_TEST
+
+        /**
+         * Number of channels.
+         */
+        static const int NUM_CHANNELS;
+        /**
+         * Channel limits constant.
+         */
+        static const double CHANNEL_LIMITS[];
 
         /**
          * Mutex used to synchronize the operations on the channel bar.

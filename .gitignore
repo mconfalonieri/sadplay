@@ -64,3 +64,4 @@ sadplay
 test_main_support
 test_sdl_channel_bar
 sadplay-*.tar.gz
+build/

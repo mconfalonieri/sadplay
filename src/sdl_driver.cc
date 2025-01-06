@@ -26,8 +26,9 @@
 #include "spectrum_analyzer.h"
 
 // Constructor.
-sdl_display_driver::sdl_display_driver(): mutex(NULL), timer_player(0),
-        cbar(NULL), freq_bar(NULL), analyzer(NULL), audio_dev_id(0) {
+sdl_display_driver::sdl_display_driver(): display(MAX_CHANNELS), mutex(NULL),
+        timer_player(0), cbar(NULL), freq_bar(NULL), analyzer(NULL),
+        audio_dev_id(0) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(255);
@@ -72,7 +73,7 @@ sdl_display_driver::~sdl_display_driver() {
 }
 
 // Initializer
-bool sdl_display_driver::initialize(int num_channels) {  
+bool sdl_display_driver::initialize() {  
     window = SDL_CreateWindow("sadplay",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -110,8 +111,8 @@ bool sdl_display_driver::initialize(int num_channels) {
     last_update_ticks = SDL_GetTicks();
 
     // Create the channel bar.
-    cbar = new sdl_channel_bar(num_channels);
-    channels = new int[num_channels];
+    cbar = new sdl_channel_bar();
+    channels = new int[cbar->get_numchannels()];
 
     freq_bar = new frequency_bar(cbar);
 
@@ -276,6 +277,4 @@ void sdl_display_driver::render() {
         update_channel_bar(elapsed_ticks);
         last_update_ticks = ticks;
     }
-
-    
 }

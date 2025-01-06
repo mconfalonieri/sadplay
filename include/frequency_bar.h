@@ -32,17 +32,7 @@
 class frequency_bar {
     public:
         /**
-         * Spectrometer bars.
-         */
-        const static int CHANNEL_BARS = 12;
-
-        /**
-         * Spectrometer limits.
-         */
-        const static double CHANNEL_LIMITS[];
-
-        /**
-         * Constructor. It accepts a channel bar that must have 12 channels.
+         * Constructor. It accepts a pointer to a channel bar that must have channels.
          * 
          * @param   cbar                the channel bar
          */
@@ -120,7 +110,17 @@ class frequency_bar {
         /**
          * Pointer to the channel bar.
          */
-        channel_bar* cbar;
+        channel_bar* chan_bar;
+
+        /**
+         * Number of channels.
+         */
+        int num_channels;
+
+        /**
+         * Frequency limits.
+         */
+        const double* freq_limits;
 };
 
 #endif // _SADPLAY_FREQUENCY_BAR_

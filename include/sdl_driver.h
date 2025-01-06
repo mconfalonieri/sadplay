@@ -67,6 +67,11 @@ class sdl_display_driver : public display {
         const static Uint32 TIMER_INTERVAL = 20U;
 
         /**
+         * Maximum number of channel bars.
+         */
+        const static int MAX_CHANNELS = 20;
+
+        /**
          * Constructor.
          */
         sdl_display_driver();
@@ -78,12 +83,10 @@ class sdl_display_driver : public display {
 
         /**
          * Initializes the view.
-         * 
-         * @param   num_channels    the number of channels.
          *
          * @return  true if correctly initialized
          */
-        bool initialize(int num_channels);
+        bool initialize();
 
         /**
          * Plays an audio file.

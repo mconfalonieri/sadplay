@@ -51,7 +51,6 @@ sadplay::~sadplay() {
 
 // Application runner.
 int sadplay::run(sadplay_args* args) {
-    const int NUM_CHANNELS = frequency_bar::CHANNEL_BARS;
 
     if (args->error) {
         show_text(texts::CMDLINE_HELP_TEXT);
@@ -62,7 +61,7 @@ int sadplay::run(sadplay_args* args) {
     this->verbose = args->verbose;
 
     log("Initialize window");
-    driver->initialize(NUM_CHANNELS);
+    driver->initialize();
 
     log("Preparing player");
     adplug_player* player = NULL;

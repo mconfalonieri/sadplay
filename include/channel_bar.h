@@ -58,7 +58,14 @@ class channel_bar {
          * 
          * @return  the number of channels
          */
-        virtual int get_numchannels() = 0;
+        virtual const int get_numchannels() = 0;
+
+        /**
+         * Returns the channel limits.
+         * 
+         * @return an array with as many alements as the number of channels
+         */
+        virtual const double* get_channel_limits() = 0;
 };
 
 #endif // _SADPLAY_CHANNEL_BAR_H_

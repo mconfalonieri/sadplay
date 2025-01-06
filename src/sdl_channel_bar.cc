@@ -21,9 +21,19 @@
         
 #include "sdl_channel_bar.h"
 
+// Number of channels.
+const int sdl_channel_bar::NUM_CHANNELS = 12;
+
+// Frequency limits on each channel.
+const double sdl_channel_bar::CHANNEL_LIMITS[] = {
+        60.0,       170.0,      310.0,      600.0,
+        1000.0,     3000.0,     6000.0,     14000.0,
+        16000.0,    18000.0,    20000.0,    100000.0
+};
+
 // Constructor: it creates the channel vector and initializes the mutex.
-sdl_channel_bar::sdl_channel_bar(int num_channels): mutex(NULL),
-        channels(num_channels) {
+sdl_channel_bar::sdl_channel_bar(): mutex(NULL),
+        channels(NUM_CHANNELS) {
     this->mutex = SDL_CreateMutex();
     reset_channels();
 }
@@ -93,7 +103,7 @@ void sdl_channel_bar::time_elapsed(Uint32 time_elapsed) {
     SDL_UnlockMutex(this->mutex);
 }
 
-int sdl_channel_bar::get_numchannels() {
+const int sdl_channel_bar::get_numchannels() {
     int status = SDL_LockMutex(this->mutex);
     if (status != 0) {
         return 0;
@@ -101,6 +111,10 @@ int sdl_channel_bar::get_numchannels() {
     int num_channels = this->channels.size();
     SDL_UnlockMutex(this->mutex);
     return num_channels;
+}
+
+const double* sdl_channel_bar::get_channel_limits() {
+    return CHANNEL_LIMITS;
 }
 
 void sdl_channel_bar::get_channels(int* channels) {

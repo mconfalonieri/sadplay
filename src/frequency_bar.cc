@@ -18,24 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "frequency_bar.h"
 
 #include <cassert>
 #include <cmath>
-#include "frequency_bar.h"
 
-// Frequency limits on each channel.
-const double frequency_bar::CHANNEL_LIMITS[] = {
-        60.0,       170.0,      310.0,      600.0,
-        1000.0,     3000.0,     6000.0,     14000.0,
-        16000.0,    18000.0,    20000.0,    100000.0
-};
-
-// Constructor. The channel bar MUST have the right number of bars. This is
-// enforced with an assert.
+// Constructor.
 frequency_bar::frequency_bar(channel_bar* cbar) {
-    int num_channels = cbar->get_numchannels();
-    assert(num_channels == CHANNEL_BARS);
-    this->cbar = cbar;
+    num_channels = cbar->get_numchannels();
+    freq_limits = cbar->get_channel_limits();
+    chan_bar = cbar;
 }
 
 // Destructor.
@@ -46,27 +38,27 @@ frequency_bar::~frequency_bar() {
 // Acquires the results.
 void frequency_bar::acquire_fft(int sample_rate, int num_samples,
         const fftw_complex* result) {
-    double energies[CHANNEL_BARS] = { 0 };
-    int channels[CHANNEL_BARS] = { 0 };
-    const int LAST_CHANNEL = CHANNEL_BARS - 1;
+    double energies[num_channels];
+    int channels[num_channels];
+    const int LAST_CHANNEL = num_channels - 1;
 
     int channel = 0;
     for (int i = 0; i < num_samples; i++) {
         double freq = get_frequency(i, num_samples, sample_rate);
-        if (freq > CHANNEL_LIMITS[channel] && channel < LAST_CHANNEL) {
+        if (freq > freq_limits[channel] && channel < LAST_CHANNEL) {
             channel++;
         }
         energies[channel] += squared_magnitude(result[i]);
     }
 
     prepare_channels(energies, channels);
-    cbar->update_all(channels);
+    chan_bar->update_all(channels);
 }
 
 // Prepares the channels to be loaded in the channel bar.
 void frequency_bar::prepare_channels(const double* in_buffer,
         int* out_buffer) {
-    for (int i = 0; i < CHANNEL_BARS; i++) {
+    for (int i = 0; i < num_channels; i++) {
         double db_value = 10.0 * log10(in_buffer[i]) / 1.4;
         out_buffer[i] = (db_value > 100)? 100 :
                 ((db_value < 0)? 0 : (int) db_value);
